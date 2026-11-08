@@ -900,5 +900,6 @@ window.VT_SRC=SRC;
 await new Promise(res=>{const a=document.createElement('script');a.src=SRC+'anim.js';a.onload=res;a.onerror=()=>{if(SRC!=='./'){const b=document.createElement('script');b.src='anim.js';b.onload=b.onerror=res;document.head.appendChild(b)}else res()};document.head.appendChild(a)});
 const el=document.createElement('script');el.textContent=code;document.body.appendChild(el)})();
 </script>
+<script src="tcg.js" defer></script>
 </body>
 </html>

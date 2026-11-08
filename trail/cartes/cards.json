@@ -1,0 +1,141 @@
+{
+ "serie": "Série 01 · Objectif Diagonale 2027",
+ "first": "2026-11-13",
+ "finale": "2027-10-14",
+ "slots": 49,
+ "revealHour": 18,
+ "cards": [
+  {
+   "slot": 1,
+   "id": "mulet",
+   "title": "Le Mulet des Anges",
+   "pv": "2026",
+   "goal": "25 boucles",
+   "attack": "Prom’ Express",
+   "text": "Une mouette lui pique son gel au km 3. Victor passe en mode mulet supersonique, récupère le gel et finit la boucle avec un tour d’avance.",
+   "dmg": "120",
+   "motto": "Mouette 0 – Mulet 1",
+   "img": "img/s01-mulet.jpg"
+  },
+  {
+   "slot": 2,
+   "id": "president",
+   "title": "Le Président du Trail",
+   "pv": "4501",
+   "goal": "10 discours",
+   "attack": "Vote à main levée",
+   "text": "Victor décrète que la côte du Mont Boron est désormais une descente. Adopté à l’unanimité.",
+   "dmg": "130",
+   "motto": "« Je cours, donc je préside. »",
+   "img": null
+  },
+  {
+   "slot": 3,
+   "id": "plage",
+   "title": "Le Plongeur des Galets",
+   "pv": "1860",
+   "goal": "3 plongeons",
+   "attack": "Plat-ventre Supersonique",
+   "text": "Victor plonge du Rauba Capeù. L’éclaboussure rafraîchit toute la Prom’. Les galets applaudissent.",
+   "dmg": "110",
+   "motto": "« La Méditerranée, c’est juste un ravito géant. »",
+   "img": null
+  },
+  {
+   "slot": 4,
+   "id": "salle",
+   "title": "Le Leg Day Éternel",
+   "pv": "999",
+   "goal": "69 squats",
+   "attack": "Squat aux Gels",
+   "text": "Victor soulève une barre chargée de 200 gels énergétiques. Les miroirs de la salle se fissurent de jalousie.",
+   "dmg": "140",
+   "motto": "« Les jambes, c’est tous les jours. »",
+   "img": null
+  },
+  {
+   "slot": 5,
+   "id": "tsql",
+   "title": "Le Maître du SELECT",
+   "pv": "1433",
+   "goal": "0 deadlock",
+   "attack": "SELECT * FROM Boucles",
+   "text": "Victor optimise la course : plus aucun index manquant, chaque boucle passe en 2 ms. Le DBA pleure de joie.",
+   "dmg": "120",
+   "motto": "« Un bon plan d’exécution, c’est comme un bon plan de course. »",
+   "img": null
+  },
+  {
+   "slot": 6,
+   "id": "lcbft",
+   "title": "L’Enquêteur LCB-FT",
+   "pv": "4000",
+   "goal": "1 virement suspect",
+   "attack": "Due Diligence Express",
+   "text": "Victor flaire une transaction louche à 3 km. Le blanchisseur se rend avant même la première boucle.",
+   "dmg": "150",
+   "motto": "« Rien ne m’échappe, même pas un centime. »",
+   "img": null
+  },
+  {
+   "slot": 7,
+   "id": "traiteur",
+   "title": "Le Chef du Ravito",
+   "pv": "2500",
+   "goal": "300 canapés",
+   "attack": "Buffet Gastronomique",
+   "text": "Victor transforme le ravito en restaurant étoilé. Les coureurs oublient de repartir.",
+   "dmg": "100",
+   "motto": "« Un trail sans petits fours, c’est une erreur. »",
+   "img": null
+  },
+  {
+   "slot": 8,
+   "id": "panneauteur",
+   "title": "Le Panneauteur de l’Ombre",
+   "pv": "1000",
+   "goal": "24 heures",
+   "attack": "Panneau Hypnotique",
+   "text": "Victor brandit le panneau P2 +0.3s. Le pilote accélère, l’adversaire part au tapis.",
+   "dmg": "120",
+   "motto": "« Je ne cours pas, je fais courir. »",
+   "img": null
+  },
+  {
+   "slot": 9,
+   "id": "restonica",
+   "title": "Le Sanglier de la Restonica",
+   "pv": "2400",
+   "goal": "100 miles",
+   "attack": "Charge du Sanglier",
+   "text": "Un sanglier corse vole son sandwich figatellu. Victor le rattrape en descente et récupère le sandwich.",
+   "dmg": "130",
+   "motto": "« En Corse, même les sangliers me laissent passer. »",
+   "img": "img/s09-restonica.jpg"
+  },
+  {
+   "slot": 10,
+   "id": "autruche",
+   "title": "L’Autruche Killer",
+   "pv": "6000",
+   "goal": "60 km",
+   "attack": "Sprint Savane",
+   "text": "Une autruche le défie en duel. Victor gagne d’une moustache.",
+   "dmg": "140",
+   "motto": "« Même les autruches demandent mon Strava. »",
+   "img": null
+  },
+  {
+   "slot": 49,
+   "id": "diagonale",
+   "title": "Le Fou de la Diagonale",
+   "pv": "165",
+   "goal": "1 Diagonale",
+   "attack": "Frontale Laser",
+   "text": "Victor allume sa frontale : le volcan s’écarte pour le laisser passer. Les fous le suivent en file indienne.",
+   "dmg": "160",
+   "motto": "« Dormir ? Après l’arrivée. »",
+   "img": null
+  }
+ ]
+}
