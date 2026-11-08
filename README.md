@@ -3,7 +3,7 @@
 Deux petites applis web installables (PWA), sans serveur ni compte :
 
 - **Mon budget** (`/budget`) : dépenses fixes et variables, journal du mois, reste à dépenser, mode simulation, onglet Investir (projection, clôture des mois).
-- **VictorTrail OS** (`/trail`) : carnet d'entraînement façon « faux téléphone » : séances, semaine, stats et charge, courses 2027, zones, ravito.
+- **VictorTrail OS** (`/trail`) : copie du site VictorTrail habillée façon 25H OS. Elle relit les données à jour de `/victorTrail/` quand il est en ligne, sinon elle utilise sa copie locale.
 - **Ma cuisine** (`/cuisine`) : planning de repas sur 4 semaines orienté ultra-trail, recettes healthy, liste de courses (semaine ou mois) et estimation du budget courses.
 
 Les données restent dans le navigateur du téléphone (localStorage). Les réglages de chaque appli permettent d'exporter ou d'importer une sauvegarde JSON.

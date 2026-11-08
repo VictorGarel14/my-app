@@ -1,7 +1,7 @@
 {
   "name": "VictorTrail OS",
   "short_name": "VictorTrail",
-  "start_url": "./",
+  "start_url": "./#/aujourdhui",
   "scope": "./",
   "display": "standalone",
   "background_color": "#1a1033",

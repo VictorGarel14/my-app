@@ -1,16 +1,17 @@
-// Hors ligne : on garde l'appli en cache et on la met à jour en arrière-plan.
-const CACHE = "trail-v1";
-const SHELL = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/apple-touch-icon.png"];
-self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))); self.skipWaiting(); });
-self.addEventListener("activate", e => {
-  e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))));
-  self.clients.claim();
-});
-self.addEventListener("fetch", e => {
-  if (e.request.method !== "GET") return;
-  e.respondWith(caches.open(CACHE).then(async c => {
-    const hit = await c.match(e.request);
-    const net = fetch(e.request).then(r => { if (r && (r.ok || r.type === "opaque")) c.put(e.request, r.clone()); return r; }).catch(() => hit);
-    return hit || net;
-  }));
-});
+/* Victor Trail : fonctionne hors ligne (réseau d'abord pour les données, cache en secours) */
+const V='vt-os-1';
+const CORE=['./','index.html','anim.js','manifest.webmanifest','icons/icon-192.png','icons/apple-touch-icon.png','icons/icon-512.png'];
+self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>Promise.all(CORE.map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()))});
+self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V&&x!=='vt-tiles').map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
+const net=(req,cache)=>fetch(req).then(r=>{if(r&&r.ok){const c=r.clone();caches.open(cache).then(x=>x.put(req,c))}return r});
+async function trimTiles(){const c=await caches.open('vt-tiles');const k=await c.keys();if(k.length>600)for(const r of k.slice(0,k.length-600))await c.delete(r)}
+self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(e.request.method!=='GET')return;
+  // tuiles de carte : cache d'abord (consultées avant la course = disponibles sans réseau)
+  if(/tile\.opentopomap\.org|tile\.openstreetmap\.org/.test(u.hostname)){e.respondWith(caches.open('vt-tiles').then(c=>c.match(e.request).then(m=>m||fetch(e.request).then(r=>{if(r.ok){c.put(e.request,r.clone());trimTiles()}return r}))));return}
+  // bibliothèques et polices : cache d'abord
+  if(/cdnjs\.cloudflare\.com|fonts\.(googleapis|gstatic)\.com/.test(u.hostname)){e.respondWith(caches.match(e.request).then(m=>m||net(e.request,V)));return}
+  // météo, routes : réseau, sinon dernière réponse
+  if(/api\.open-meteo\.com|router\.project-osrm\.org/.test(u.hostname)){e.respondWith(net(e.request,V).catch(()=>caches.match(e.request)));return}
+  if(u.origin!==location.origin)return;
+  // live.json et pages : réseau d'abord, cache si pas de réseau
+  e.respondWith(net(e.request,V).catch(()=>caches.match(e.request,{ignoreSearch:/live\.json$/.test(u.pathname)}).then(m=>m||caches.match('index.html'))))});
