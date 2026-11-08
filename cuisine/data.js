@@ -65,7 +65,10 @@ window.ING = {
   kiwi:{n:"Kiwis",r:"Fruits & légumes",u:"pc",p:0.4},
   cottage:{n:"Cottage cheese",r:"Frais",u:"g",p:8},
   mascarpone:{n:"Mascarpone",r:"Frais",u:"g",p:9},
-  pistache:{n:"Crème de pistache",r:"Épicerie",u:"g",p:30}
+  pistache:{n:"Crème de pistache",r:"Épicerie",u:"g",p:30},
+  chapelure:{n:"Chapelure (ou panko)",r:"Épicerie",u:"g",p:4,s:1},
+  chili:{n:"Sauce chili douce",r:"Épicerie",u:"g",p:6,s:1},
+  chou:{n:"Chou blanc (ou mélange coleslaw)",r:"Fruits & légumes",u:"g",p:1.8}
 };
 
 // Recettes (1 portion) : t = type (pdj, plat, snack), m = minutes, k = kcal, P/G/L = protéines/glucides/lipides (g), valeurs indicatives
@@ -198,4 +201,18 @@ window.RECIPES.push(
    i:[["poulet",150],["pdt",250],["fblanc",80],["oignon",40],["ail",1],["huile",5],["epices",2]],
    s:["Couper les pommes de terre en morceaux et les cuire 12 min à l'eau.","Dorer le poulet assaisonné dans la poêle avec l'huile, puis l'oignon et l'ail.","Ajouter les pommes de terre pour les faire dorer, puis, hors du feu, le fromage blanc et un peu d'eau de cuisson pour une sauce crémeuse."]}
 );
-window.CREATORS=[["@soufiane.haloui","Repas high protein"],["@flavietaste","Desserts"],["@macuisine.fit","Cuisine fit"],["@orlane.dbe","Recettes healthy"],["@rbellfit10","Fitness & recettes"],["@neoselfapp","Recettes healthy"],["@Pyx",""]];
+window.RECIPES.push(
+  {id:"ap_onepot",t:"plat",n:"Pâtes one-pot bœuf épicé & fromage blanc (meal prep)",m:25,k:620,P:47,G:83,L:11,tags:["batch","recup","budget"],src:{by:"@alex_pyx2",url:"https://www.tiktok.com/@alex_pyx2"},
+   i:[["pates",100],["boeuf",125],["oignon",40],["epices",3],["tomconc",80],["fblanc",80]],
+   s:["Dans une grande cocotte, faire revenir l'oignon puis le bœuf haché avec les épices (paprika, piment, ail).","Ajouter les tomates, puis le fromage blanc hors du feu pour une sauce crémeuse.","Cuire les pâtes à part, les égoutter et les mélanger à la sauce.","Répartir dans 4 boîtes : 4 repas prêts pour la semaine."]},
+  {id:"ap_crispy",t:"plat",n:"Bowl poulet croustillant sauce chili, riz & crudités",m:30,k:720,P:45,G:95,L:15,tags:["recup"],src:{by:"@alex_pyx2",url:"https://www.tiktok.com/@alex_pyx2"},
+   i:[["poulet",150],["chapelure",20],["chili",30],["riz",80],["concombre",0.5],["avocat",0.5],["oignon",20]],
+   s:["Couper le poulet en bouchées, l'assaisonner et l'enrober de chapelure.","Cuire 15-18 min à 200 °C sur une plaque, jusqu'à ce que ce soit doré.","Mélanger les bouchées chaudes avec la sauce chili (un peu de sriracha si tu aimes piquant).","Servir sur le riz avec concombre, avocat, oignon rouge et graines de sésame."]},
+  {id:"ap_mealprep",t:"plat",n:"Poulet mariné, sauce cacahuète-coco, chou & carottes sautés",m:35,k:750,P:48,G:83,L:24,tags:["batch","recup"],src:{by:"@alex_pyx2",url:"https://www.tiktok.com/@alex_pyx2"},
+   i:[["poulet",150],["huile",5],["epices",2],["soja",15],["coco",50],["bcaca",15],["chou",120],["carotte",60],["riz",80]],
+   s:["Mariner le poulet en dés avec l'huile, le paprika et un peu de sauce soja, puis le dorer à la poêle.","Mélanger le reste de la sauce soja, le lait de coco et le beurre de cacahuète, verser sur le poulet et laisser épaissir 3 min.","Faire sauter le chou et les carottes râpés à feu vif, 5 min.","Répartir avec le riz dans des boîtes : ça se garde 3 jours au frigo."]},
+  {id:"ap_oats",t:"pdj",n:"Overnight oats protéinés en bocaux, chocolat-banane",m:10,k:500,P:31,G:65,L:11,tags:["batch","avant","rapide"],src:{by:"@alex_pyx2",url:"https://www.tiktok.com/@alex_pyx2"},
+   i:[["avoine",60],["lait",150],["skyr",150],["choco",10],["banane",0.5]],
+   s:["Mélanger l'avoine et le lait (vanille ou cannelle si tu veux), répartir au fond des bocaux.","Mélanger le skyr avec un peu de cacao ou une dose de protéine chocolat, l'étaler par-dessus.","Ajouter la banane en rondelles et le chocolat noir haché.","Fermer et laisser une nuit au frigo : à préparer pour 3-4 matins d'un coup."]}
+);
+window.CREATORS=[["@soufiane.haloui","Repas high protein"],["@flavietaste","Desserts"],["@macuisine.fit","Cuisine fit"],["@orlane.dbe","Recettes healthy"],["@rbellfit10","Fitness & recettes"],["@neoselfapp","Recettes healthy"],["@alex_pyx2","Meal prep & bocaux"]];
