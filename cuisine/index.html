@@ -126,6 +126,10 @@ table.grid td:first-child{text-align:left;font-weight:700}
 .macros span{font-size:11px;color:var(--mute);font-weight:700}
 .steps{margin:0;padding-left:20px}
 .steps li{margin-bottom:8px}
+.train{display:flex;align-items:center;gap:10px;background:var(--pink2);border:2px solid var(--ink);border-radius:12px;padding:8px 10px;margin:6px 0 4px}
+.train.t-repos{background:#efe6f7}.train.t-longue,.train.t-course{background:var(--lime)}.train.t-qualite{background:#ffd6ea}
+.train .ti{font-size:22px}.train .tx{flex:1;min-width:0}.train .tx b{display:block;font-size:14px}.train .tx small{display:block;font-size:12px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.day.today{box-shadow:4px 4px 0 var(--pink)}
 .sheet h3 span{flex:1;padding-right:8px;line-height:1.15}
 input[type=search]{-webkit-appearance:none}
 </style></head><body><div id="root"></div><script src="data.js"></script><script>(function(){
@@ -153,18 +157,32 @@ function today(){var t=new Date();t.setMinutes(t.getMinutes()-t.getTimezoneOffse
 function pool(type,tag){return RECIPES.filter(function(r){return r.t===type&&S.excl.indexOf(r.id)<0&&(!tag||r.tags.indexOf(tag)>=0)})}
 function pick(list,avoid){var c=list.filter(function(r){return avoid.indexOf(r.id)<0});if(!c.length)c=list;if(!c.length)return null;
 var w=[];c.forEach(function(r){w.push(r);if(S.fav.indexOf(r.id)>=0){w.push(r);w.push(r)}});return w[Math.floor(Math.random()*w.length)].id}
-function slotWant(d,slot){var lr=S.longRun;if(lr<0)return null;var prev=(lr+6)%7;
+var TP=null,GW=0;try{TP=JSON.parse(localStorage.getItem("vg-cuisine-train")||"null")}catch(e){}
+function isoD(d){var x=new Date(d);x.setMinutes(x.getMinutes()-x.getTimezoneOffset());return x.toISOString().slice(0,10)}
+function mondayOf(dt){var d=new Date(dt);d.setHours(12,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d}
+function addD(s,n){var p=s.split("-");var d=new Date(+p[0],+p[1]-1,+p[2],12);d.setDate(d.getDate()+n);return isoD(d)}
+function dateOf(wi,d){return addD(S.base,wi*7+d)}
+function shortD(s){var p=s.split("-");return new Date(+p[0],+p[1]-1,+p[2]).toLocaleDateString("fr-FR",{day:"numeric",month:"short"}).replace(".","")}
+var DT={repos:["Repos","😴",0.9],leger:["Footing léger","🏃",1.0],salle:["Salle","🏋️",1.05],moyen:["Séance moyenne","🏃",1.1],qualite:["Séance qualité","⚡",1.15],longue:["Sortie longue","⛰️",1.35],course:["Course","🏁",1.4]};
+function dayTrain(date){if(!TP)return null;var l=TP[date]||[];var m=0,km=0,dp=0,q=false,race=false;l.forEach(function(x){m+=num(x.m);km+=num(x.km);dp+=num(x.dp);if(x.c==="race")race=true;if(x.z==="Z4"||x.z==="Z5"||x.z==="VMA"||x.k)q=true});
+var type="repos";if(race)type="course";else if(m>=150||km>=25||dp>=1000)type="longue";else if(q)type="qualite";else if(m>=75)type="moyen";else if(m>0)type=l.every(function(x){return x.c==="gym"})?"salle":"leger";
+return{l:l,m:m,km:km,dp:dp,type:type}}
+function dayFactor(date){var t=dayTrain(date);return S.portion*(t?DT[t.type][2]:1)}
+function slotWant(d,slot){var date=dateOf(GW,d),t=dayTrain(date);if(t){var nx=dayTrain(addD(date,1));var big=t.type==="longue"||t.type==="course";
+if(big&&slot==="m")return "avant";if((big||t.type==="qualite")&&slot!=="m")return "recup";if(nx&&(nx.type==="longue"||nx.type==="course")&&slot==="s")return "avant";return null}
+var lr=S.longRun;if(lr<0)return null;var prev=(lr+6)%7;
 if(d===lr&&slot==="m")return "avant";if(d===prev&&slot==="s")return "avant";if(d===lr&&(slot==="d"||slot==="s"))return "recup";return null}
 function pickFor(d,slot,used){var type=slot==="m"?"pdj":"plat";var tag=slotWant(d,slot);var l=tag?pool(type,tag):[];if(!l.length)l=pool(type);return pick(l,used)}
-function genWeek(){var w={days:[],snacks:[]};var used=[],lastPdj=[];
+function genWeek(wi){GW=wi==null?S.weeks.length:wi;var w={days:[],snacks:[]};var used=[],lastPdj=[];
 for(var d=0;d<7;d++){var day={};SLOTS.forEach(function(sl){var k=sl[0];if(!S.grid[d][k]){day[k]=null;return}
 var id=pickFor(d,k,k==="m"?lastPdj:used);day[k]=id;if(k==="m")lastPdj=[id];else used.push(id)});w.days.push(day)}
 var sn=pool("snack");for(var i=0;i<S.snacks;i++){var x=pick(sn,w.snacks.length<sn.length?w.snacks:[]);if(x)w.snacks.push(x)}
 return w}
-function normalize(){while(S.weeks.length<4)S.weeks.push(genWeek());
-S.weeks.forEach(function(w){var used=[];w.days.forEach(function(day){["d","s"].forEach(function(k){if(day[k])used.push(day[k])})});
+function normalize(){while(S.weeks.length<4)S.weeks.push(genWeek(S.weeks.length));
+S.weeks.forEach(function(w,wi){GW=wi;var used=[];w.days.forEach(function(day){["d","s"].forEach(function(k){if(day[k])used.push(day[k])})});
 w.days.forEach(function(day,d){SLOTS.forEach(function(sl){var k=sl[0];if(!S.grid[d][k])day[k]=null;else if(!day[k]||!RB[day[k]]){day[k]=pickFor(d,k,used);used.push(day[k])}})});
 w.snacks=w.snacks.filter(function(x){return RB[x]});var sn=pool("snack");while(w.snacks.length<S.snacks&&sn.length)w.snacks.push(pick(sn,w.snacks));w.snacks=w.snacks.slice(0,Math.max(0,S.snacks))})}
+if(!S.base)S.base=isoD(mondayOf(new Date()));(function(){var cm=isoD(mondayOf(new Date()));var moved=false;while(S.base<cm){S.weeks.shift();S.base=addD(S.base,7);if(S.week>0)S.week--;moved=true}if(moved)S.checked={}})();
 normalize();save();
 
 // ---------- calculs ----------
@@ -173,7 +191,7 @@ function ingCost(id,q){var u=ING[id].u;return u==="pc"?q*price(id):q/1000*price(
 function recCost(r,f){f=f||1;return r.i.reduce(function(s,x){return s+ingCost(x[0],x[1]*f)},0)}
 function weekRecipes(w){var l=[];w.days.forEach(function(day){SLOTS.forEach(function(sl){if(day[sl[0]])l.push(RB[day[sl[0]]])})});w.snacks.forEach(function(x){l.push(RB[x])});return l.filter(Boolean)}
 function weekMeals(w){var n=0;w.days.forEach(function(day){SLOTS.forEach(function(sl){if(day[sl[0]])n++})});return n}
-function aggregate(weeks){var q={};weeks.forEach(function(w){weekRecipes(w).forEach(function(r){r.i.forEach(function(x){q[x[0]]=(q[x[0]]||0)+x[1]*S.portion})})});return q}
+function aggregate(weeks){var q={};function addR(r,f){if(r)r.i.forEach(function(x){q[x[0]]=(q[x[0]]||0)+x[1]*f})}weeks.forEach(function(w){var wi=S.weeks.indexOf(w);w.days.forEach(function(day,d){var f=dayFactor(dateOf(wi,d));SLOTS.forEach(function(sl){addR(RB[day[sl[0]]],f)})});w.snacks.forEach(function(id){addR(RB[id],S.portion)})});return q}
 function costOf(q){var c=0;for(var id in q)c+=ingCost(id,q[id]);return c}
 function weekCost(w){return costOf(aggregate([w]))}
 function monthCost(){return S.weeks.reduce(function(s,w){return s+weekCost(w)},0)}
@@ -184,21 +202,23 @@ function budgetApp(){try{var b=JSON.parse(localStorage.getItem(BKEY)||"null");if
 function budgetVal(){if(S.budget!==""&&S.budget!=null)return num(S.budget);var b=budgetApp();return b?num(b.item.amount):350}
 
 // ---------- vues ----------
-function recLine(r,extra){var f=S.portion;return '<span class="small mute">'+Math.round(r.k*f)+' kcal · '+Math.round(r.P*f)+' g prot · '+fmt2.format(recCost(r,f))+(extra||'')+'</span>'}
-function viewSemaine(){var w=S.weeks[S.week];var h='<div class="wk">'+[0,1,2,3].map(function(i){return '<button class="'+(S.week===i?'on':'')+'" data-week="'+i+'">Sem. '+(i+1)+'</button>'}).join("")+'</div>';
-var kc=0,nd=0;w.days.forEach(function(day){var k=0,has=false;SLOTS.forEach(function(sl){if(day[sl[0]]){k+=RB[day[sl[0]]].k*S.portion;has=true}});if(has){kc+=k;nd++}});
-h+='<div class="card hero"><div class="lab">Semaine '+(S.week+1)+'</div><div class="big">'+eur(weekCost(w))+'</div><div class="sub">'+weekMeals(w)+' repas + '+w.snacks.length+' collations · ≈ '+eur(weekCost(w)/Math.max(1,weekMeals(w)+w.snacks.length*0.4))+' / repas</div><div class="chip">≈ '+Math.round(nd?kc/nd:0)+' kcal / jour à la maison</div></div>';
+function recLine(r,extra,f){f=f||S.portion;return '<span class="small mute">'+Math.round(r.k*f)+' kcal · '+Math.round(r.P*f)+' g prot · '+fmt2.format(recCost(r,f))+(extra||'')+'</span>'}
+function viewSemaine(){var w=S.weeks[S.week];var h='<div class="wk">'+[0,1,2,3].map(function(i){return '<button class="'+(S.week===i?'on':'')+'" data-week="'+i+'">'+shortD(dateOf(i,0))+'</button>'}).join("")+'</div>';
+var kc=0,nd=0;w.days.forEach(function(day,d){var k=0,has=false,f=dayFactor(dateOf(S.week,d));SLOTS.forEach(function(sl){if(day[sl[0]]){k+=RB[day[sl[0]]].k*f;has=true}});if(has){kc+=k;nd++}});
+h+='<div class="card hero"><div class="lab">Semaine du '+shortD(dateOf(S.week,0))+'</div><div class="big">'+eur(weekCost(w))+'</div><div class="sub">'+weekMeals(w)+' repas + '+w.snacks.length+' collations · ≈ '+eur(weekCost(w)/Math.max(1,weekMeals(w)+w.snacks.length*0.4))+' / repas</div><div class="chip">≈ '+Math.round(nd?kc/nd:0)+' kcal / jour à la maison</div></div>';
 h+='<div style="display:flex;gap:8px;margin-top:12px"><button class="btn" style="flex:1" data-act="regen">🔄 Nouvelle semaine</button><button class="btn" style="flex:1;background:var(--mint)" data-act="grid">⚙️ Mes repas</button></div>';
 if(showGrid)h+=gridHtml();
 w.days.forEach(function(day,d){var any=SLOTS.some(function(sl){return day[sl[0]]});if(!any)return;
-h+='<div class="card day"><div class="dh"><b class="disp" style="font-size:19px">'+DAYS[d]+'</b>'+(S.longRun===d?'<span class="pill y">Sortie longue</span>':S.longRun>=0&&(S.longRun+6)%7===d?'<span class="pill">Veille de sortie longue</span>':'')+'</div>';
-SLOTS.forEach(function(sl){var id=day[sl[0]];if(!id)return;var r=RB[id];h+='<div class="meal"><div class="slot">'+sl[1]+'</div><div class="mm" data-open="'+id+'"><div class="ttl">'+esc(r.n)+'</div>'+recLine(r)+'</div><button class="btn ghost sw" data-swap="'+d+'.'+sl[0]+'" aria-label="Changer ce repas">🔄</button></div>'});h+='</div>'});
+var dt=dateOf(S.week,d),tr=dayTrain(dt),f=dayFactor(dt),isT=dt===isoD(new Date());
+h+='<div class="card day'+(isT?' today':'')+'"><div class="dh"><b class="disp" style="font-size:19px">'+DAYS[d]+' <span style="font-family:Rubik;font-size:14px;color:var(--mute)">'+shortD(dt)+(isT?' · aujourd\'hui':'')+'</span></b>'+(tr?'':(S.longRun===d?'<span class="pill y">Sortie longue</span>':S.longRun>=0&&(S.longRun+6)%7===d?'<span class="pill">Veille de sortie longue</span>':''))+'</div>';
+if(tr){var tt=DT[tr.type];h+='<div class="train t-'+tr.type+'"><span class="ti">'+tt[1]+'</span><span class="tx"><b>'+tt[0]+'</b>'+(tr.l.length?'<small>'+tr.l.map(function(x){return esc(x.t)}).join(' + ')+' · '+Math.round(tr.m)+' min'+(tr.dp?' · '+Math.round(tr.dp)+' m D+':'')+'</small>':'<small>Jour sans entraînement</small>')+'</span><span class="pill'+(f>1.2?' y':'')+'">× '+String(Math.round(f*100)/100).replace(".",",")+'</span></div>'}
+SLOTS.forEach(function(sl){var id=day[sl[0]];if(!id)return;var r=RB[id];h+='<div class="meal"><div class="slot">'+sl[1]+'</div><div class="mm" data-open="'+id+'"><div class="ttl">'+esc(r.n)+'</div>'+recLine(r,'',f)+'</div><button class="btn ghost sw" data-swap="'+d+'.'+sl[0]+'" aria-label="Changer ce repas">🔄</button></div>'});h+='</div>'});
 if(w.snacks.length){h+='<h2>Collations de la semaine</h2><div class="card">'+w.snacks.map(function(id,i){var r=RB[id];return '<div class="meal"><div class="mm" data-open="'+id+'"><div class="ttl">'+esc(r.n)+'</div>'+recLine(r)+'</div><button class="btn ghost sw" data-swapsn="'+i+'" aria-label="Changer">🔄</button></div>'}).join("")+'</div>'}
-h+='<div class="note">Les veilles et jours de sortie longue privilégient des repas riches en glucides faciles à digérer, puis des repas de récupération riches en protéines. Valeurs nutritionnelles et prix indicatifs.</div>';
+h+='<div class="note">'+(TP?'<b>Synchronisé avec VictorTrail.</b> Les portions suivent ton entraînement du jour (× 0,9 au repos jusqu\'à × 1,35 en sortie longue). ':'')+'Les veilles et jours de sortie longue privilégient des repas riches en glucides faciles à digérer, puis des repas de récupération riches en protéines. Valeurs nutritionnelles et prix indicatifs.</div>';
 return h}
 function gridHtml(){var h='<div class="card"><b>Repas pris à la maison</b><table class="grid"><tr><th></th>'+SLOTS.map(function(s){return '<th>'+s[1]+'</th>'}).join("")+'</tr>';
 DAYS.forEach(function(dn,d){h+='<tr><td>'+dn.slice(0,3)+'.</td>'+SLOTS.map(function(s){var on=S.grid[d][s[0]];return '<td><button class="tg'+(on?' on':'')+'" data-grid="'+d+'.'+s[0]+'" aria-label="'+dn+' '+s[1]+'">'+(on?'✓':'')+'</button></td>'}).join("")+'</tr>'});
-h+='</table><div class="row"><span>Jour de sortie longue</span><span style="width:150px"><select id="longrun"><option value="-1"'+(S.longRun<0?' selected':'')+'>Aucun</option>'+DAYS.map(function(dn,d){return '<option value="'+d+'"'+(S.longRun===d?' selected':'')+'>'+dn+'</option>'}).join("")+'</select></span></div>';
+h+='</table><div class="row"><span>Jour de sortie longue<div class="small mute">Utilisé seulement si VictorTrail est injoignable</div></span><span style="width:150px"><select id="longrun"><option value="-1"'+(S.longRun<0?' selected':'')+'>Aucun</option>'+DAYS.map(function(dn,d){return '<option value="'+d+'"'+(S.longRun===d?' selected':'')+'>'+dn+'</option>'}).join("")+'</select></span></div>';
 h+='<div class="row"><span>Collations / semaine</span><span style="width:90px"><input type="number" inputmode="numeric" id="snacks" value="'+S.snacks+'" min="0" max="14"></span></div>';
 h+='<div class="row"><span>Taille des portions<div class="small mute">Augmente-la en grosse période d\'entraînement</div></span><span style="width:110px"><select id="portion">'+[0.8,1,1.2,1.4,1.6].map(function(p){return '<option value="'+p+'"'+(S.portion===p?' selected':'')+'>× '+String(p).replace(".",",")+'</option>'}).join("")+'</select></span></div></div>';return h}
 
@@ -273,7 +293,7 @@ if(ds.tab){tab=ds.tab;try{history.replaceState(null,"","#"+tab)}catch(e){}render
 if(ds.week!==undefined){S.week=+ds.week;save();rerender();return}
 if(ds.scope){S.scope=ds.scope;save();rerender();return}
 if(ds.filter){filter=ds.filter;rerender();return}
-if(ds.swap){var p=ds.swap.split(".");var w=S.weeks[S.week];var cur=w.days[+p[0]][p[1]];var used=[cur];w.days.forEach(function(day){if(p[1]!=="m"){["d","s"].forEach(function(k){if(day[k])used.push(day[k])})}});w.days[+p[0]][p[1]]=pickFor(+p[0],p[1],used);save();rerender();return}
+if(ds.swap){GW=S.week;var p=ds.swap.split(".");var w=S.weeks[S.week];var cur=w.days[+p[0]][p[1]];var used=[cur];w.days.forEach(function(day){if(p[1]!=="m"){["d","s"].forEach(function(k){if(day[k])used.push(day[k])})}});w.days[+p[0]][p[1]]=pickFor(+p[0],p[1],used);save();rerender();return}
 if(ds.swapsn!==undefined){var w2=S.weeks[S.week];w2.snacks[+ds.swapsn]=pick(pool("snack"),w2.snacks);save();rerender();return}
 if(ds.grid){var g=ds.grid.split(".");S.grid[+g[0]][g[1]]=!S.grid[+g[0]][g[1]];normalize();save();rerender();return}
 if(ds.fav){var i=S.fav.indexOf(ds.fav);if(i>=0)S.fav.splice(i,1);else S.fav.push(ds.fav);save();rerender();return}
@@ -281,7 +301,7 @@ if(ds.excl){var j=S.excl.indexOf(ds.excl);if(j>=0)S.excl.splice(j,1);else{S.excl
 var act=ds.act;
 if(act==="close"){sheet=null;settings=false;render();return}
 if(act==="settings"){settings=true;resetArm=false;render();return}
-if(act==="regen"){S.weeks[S.week]=genWeek();save();rerender();toast("Nouvelle semaine générée");return}
+if(act==="regen"){S.weeks[S.week]=genWeek(S.week);save();rerender();toast("Nouvelle semaine générée");return}
 if(act==="grid"){showGrid=!showGrid;rerender();return}
 if(act==="prices"){showPrices=!showPrices;rerender();return}
 if(act==="uncheck"){S.checked[S.scope==="month"?"month":"w"+S.week]={};save();rerender();return}
@@ -302,6 +322,9 @@ if(t.dataset.price){S.priceOv[t.dataset.price]=t.value===""?null:num(t.value);sa
 if(t.id==="imp"){var f=t.files&&t.files[0];if(!f)return;var rd=new FileReader();rd.onload=function(){try{var d=JSON.parse(rd.result);if(!d||!d.grid)throw 0;S=d;normalize();save();settings=false;render();toast("Sauvegarde importée ✓")}catch(e){toast("Fichier invalide")}};rd.readAsText(f)}});
 root.addEventListener("input",function(ev){if(ev.target.id==="q"){query=ev.target.value;var pos=ev.target.selectionStart;render();var q=document.getElementById("q");if(q){q.focus();try{q.setSelectionRange(pos,pos)}catch(e){}}}});
 render();
+(function loadTrain(){var urls=["/victorTrail/index.html","../trail/index.html"];(function next(i){if(i>=urls.length)return;fetch(urls[i]+"?t="+Date.now(),{cache:"no-store"}).then(function(r){if(!r.ok)throw 0;return r.text()}).then(function(t){var doc=new DOMParser().parseFromString(t,"text/html");var D=JSON.parse(doc.getElementById("data").textContent);var map={};(D.plan||[]).forEach(function(w){(w.s||[]).forEach(function(x){var dt=addD(w.ws,x.d);(map[dt]=map[dt]||[]).push({t:x.t,c:x.c,m:x.m,z:x.z,km:x.km,dp:x.dp,k:x.k})})});
+var first=!TP||!S.synced;TP=map;try{localStorage.setItem("vg-cuisine-train",JSON.stringify(map))}catch(e){}
+if(first){S.synced=true;S.weeks=[];normalize();save();toast("Repas adaptés à ton plan VictorTrail ✓")}rerender()}).catch(function(){next(i+1)})})(0)})();
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(function(){})}
 })();
 </script></body></html>
