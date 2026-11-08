@@ -161,7 +161,7 @@ function today(){var t=new Date();t.setMinutes(t.getMinutes()-t.getTimezoneOffse
 // ---------- génération ----------
 function pool(type,tag){return RECIPES.filter(function(r){return r.t===type&&S.excl.indexOf(r.id)<0&&(!tag||r.tags.indexOf(tag)>=0)})}
 function pick(list,avoid){var c=list.filter(function(r){return avoid.indexOf(r.id)<0});if(!c.length)c=list;if(!c.length)return null;
-var w=[];c.forEach(function(r){w.push(r);if(S.fav.indexOf(r.id)>=0){w.push(r);w.push(r)}});return w[Math.floor(Math.random()*w.length)].id}
+var w=[];c.forEach(function(r){var n=1;if(r.src&&S.tt!==false)n=6;if(S.fav.indexOf(r.id)>=0)n+=2;for(var k=0;k<n;k++)w.push(r)});return w[Math.floor(Math.random()*w.length)].id}
 var TP=null,GW=0;try{TP=JSON.parse(localStorage.getItem("vg-cuisine-train")||"null")}catch(e){}
 function isoD(d){var x=new Date(d);x.setMinutes(x.getMinutes()-x.getTimezoneOffset());return x.toISOString().slice(0,10)}
 function mondayOf(dt){var d=new Date(dt);d.setHours(12,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d}
@@ -187,6 +187,7 @@ function normalize(){while(S.weeks.length<4)S.weeks.push(genWeek(S.weeks.length)
 S.weeks.forEach(function(w,wi){GW=wi;var used=[];w.days.forEach(function(day){["d","s"].forEach(function(k){if(day[k])used.push(day[k])})});
 w.days.forEach(function(day,d){SLOTS.forEach(function(sl){var k=sl[0];if(!S.grid[d][k])day[k]=null;else if(!day[k]||!RB[day[k]]){day[k]=pickFor(d,k,used);used.push(day[k])}})});
 w.snacks=w.snacks.filter(function(x){return RB[x]});var sn=pool("snack");while(w.snacks.length<S.snacks&&sn.length)w.snacks.push(pick(sn,w.snacks));w.snacks=w.snacks.slice(0,Math.max(0,S.snacks))})}
+if(!S.ttMig){S.ttMig=1;S.weeks=[]}
 if(!S.base)S.base=isoD(mondayOf(new Date()));(function(){var cm=isoD(mondayOf(new Date()));var moved=false;while(S.base<cm){S.weeks.shift();S.base=addD(S.base,7);if(S.week>0)S.week--;moved=true}if(moved)S.checked={}})();
 normalize();save();
 
@@ -225,6 +226,7 @@ function gridHtml(){var h='<div class="card"><b>Repas pris à la maison</b><tabl
 DAYS.forEach(function(dn,d){h+='<tr><td>'+dn.slice(0,3)+'.</td>'+SLOTS.map(function(s){var on=S.grid[d][s[0]];return '<td><button class="tg'+(on?' on':'')+'" data-grid="'+d+'.'+s[0]+'" aria-label="'+dn+' '+s[1]+'">'+(on?'✓':'')+'</button></td>'}).join("")+'</tr>'});
 h+='</table><div class="row"><span>Jour de sortie longue<div class="small mute">Utilisé seulement si VictorTrail est injoignable</div></span><span style="width:150px"><select id="longrun"><option value="-1"'+(S.longRun<0?' selected':'')+'>Aucun</option>'+DAYS.map(function(dn,d){return '<option value="'+d+'"'+(S.longRun===d?' selected':'')+'>'+dn+'</option>'}).join("")+'</select></span></div>';
 h+='<div class="row"><span>Collations / semaine</span><span style="width:90px"><input type="number" inputmode="numeric" id="snacks" value="'+S.snacks+'" min="0" max="14"></span></div>';
+h+='<div class="row"><span>Priorité aux recettes TikTok<div class="small mute">Tes créateurs passent avant les recettes de base</div></span><span><button class="tg'+(S.tt!==false?' on':'')+'" data-act="tt" style="width:56px">'+(S.tt!==false?'✓':'')+'</button></span></div>';
 h+='<div class="row"><span>Taille des portions<div class="small mute">Augmente-la en grosse période d\'entraînement</div></span><span style="width:110px"><select id="portion">'+[0.8,1,1.2,1.4,1.6].map(function(p){return '<option value="'+p+'"'+(S.portion===p?' selected':'')+'>× '+String(p).replace(".",",")+'</option>'}).join("")+'</select></span></div></div>';return h}
 
 function viewCourses(){var month=S.scope==="month";var weeks=month?S.weeks:[S.weeks[S.week]];var q=aggregate(weeks);var key=month?"month":"w"+S.week;var ck=S.checked[key]||{};
@@ -309,6 +311,7 @@ var act=ds.act;
 if(act==="close"){sheet=null;settings=false;render();return}
 if(act==="settings"){settings=true;resetArm=false;render();return}
 if(act==="regen"){S.weeks[S.week]=genWeek(S.week);save();rerender();toast("Nouvelle semaine générée");return}
+if(act==="tt"){S.tt=S.tt===false;S.weeks=[];normalize();save();rerender();toast(S.tt!==false?"Plannings refaits avec tes recettes TikTok ✓":"Plannings refaits");return}
 if(act==="grid"){showGrid=!showGrid;rerender();return}
 if(act==="prices"){showPrices=!showPrices;rerender();return}
 if(act==="uncheck"){S.checked[S.scope==="month"?"month":"w"+S.week]={};save();rerender();return}
