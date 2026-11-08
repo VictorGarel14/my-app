@@ -61,7 +61,7 @@ teriyaki:{u:["Casserole","Poêle","Cuit-vapeur ou passoire + couvercle","Petit b
  "Verse la sauce sur le poulet, remue 1 min : elle devient brillante et nappe les morceaux.",
  "Dans un bol : riz, brocoli, poulet, et le reste de sauce par-dessus."]},
 saumonpd:{u:["Plaque du four + papier cuisson","Casserole","Économe"],s:[
- "Préchauffe le four à 200 °C.",
+ "Préchauffe le four 10 min avant (réglages dans « Réglage du four » en bas de la recette).",
  "Épluche la patate douce à l'économe et coupe-la en cubes de 2 cm. Sur la plaque, mélange-les avec l'huile, du sel et du paprika.",
  "Enfourne 15 min.",
  "Ajoute le pavé de saumon sur la même plaque (sel, poivre) et remets 12 min au four. Le saumon est cuit quand il se détache en lamelles à la fourchette.",
@@ -150,13 +150,13 @@ patesaumon:{u:["Mandoline","Casserole","Poêle"],s:[
  "Hors du feu, ajoute le fromage blanc, le zeste (la peau râpée) et le jus du demi-citron, une louche d'eau des pâtes, sel, poivre.",
  "Ajoute les pâtes égouttées et mélange doucement pour ne pas écraser le saumon."]},
 tofubowl:{u:["Plaque du four + papier cuisson","Casserole","Poêle","Passoire fine","Économe"],s:[
- "Préchauffe le four à 200 °C. Épluche la patate douce, coupe-la en cubes, mélange avec un filet d'huile et du sel sur la plaque, enfourne 25 min.",
+ "Préchauffe le four 10 min avant (réglages dans « Réglage du four » en bas de la recette). Épluche la patate douce, coupe-la en cubes, mélange avec un filet d'huile et du sel sur la plaque, enfourne 25 min.",
  QUINOA,
  "Coupe le brocoli en petits bouquets et cuis-les 6 min à la vapeur ou dans l'eau bouillante.",
  "Coupe le poulet en dés. Poêle sur feu vif avec un filet d'huile 6 min, puis ajoute la sauce soja et laisse caraméliser 1 min.",
  "Assemble le bowl : quinoa, patate douce, brocoli, poulet."]},
 steakpdt:{u:["Plaque du four + papier cuisson","Poêle"],s:[
- "Préchauffe le four à 200 °C.",
+ "Préchauffe le four 10 min avant (réglages dans « Réglage du four » en bas de la recette).",
  "Lave les pommes de terre (pas besoin de les éplucher), coupe-les en quartiers. Sur la plaque, mélange avec l'huile, sel, poivre et herbes de Provence.",
  "Enfourne 30 min en les retournant à mi-cuisson : elles doivent être dorées et croustillantes.",
  "5 min avant la fin, fais chauffer la poêle sur feu vif sans matière grasse. Pose le steak et cuis 2 à 3 min de chaque côté selon la cuisson voulue.",
@@ -177,7 +177,7 @@ soupebut:{u:["Grande casserole","Mixeur plongeant ou blender","Économe","Grille
  "Ajoute le lait de coco et mixe jusqu'à ce que ce soit bien lisse.",
  "Sers avec les tartines grillées."]},
 pouletsem:{u:["Mandoline","Plaque du four + papier cuisson","Saladier","Bouilloire"],s:[
- "Préchauffe le four à 200 °C.",
+ "Préchauffe le four 10 min avant (réglages dans « Réglage du four » en bas de la recette).",
  "Coupe la courgette et la carotte en fines rondelles à la mandoline, le poivron en lanières. "+MANDO,
  "Coupe le poulet en morceaux. Sur la plaque, mélange légumes et poulet avec l'huile, les épices (paprika, cumin), sel et poivre.",
  "Enfourne 25 min en remuant à mi-cuisson.",
@@ -230,7 +230,7 @@ sh_cottage:{u:["Mandoline","Petit bol","Grille-pain"],s:[
  "Coupe l'avocat en tranches.",
  "Pose le thon au centre, l'avocat à côté, parsème d'oignon et d'herbes, arrose de citron. Sers avec le pain grillé."]},
 sh_brochettes:{u:["Mandoline","Saladier","Plaque du four + papier cuisson","Piques à brochette","Couteau bien aiguisé"],s:[
- "Préchauffe le four à 200 °C. Si tes piques sont en bois, fais-les tremper dans l'eau (sinon elles brûlent).",
+ "Préchauffe le four 10 min avant (réglages dans « Réglage du four » en bas de la recette). Si tes piques sont en bois, fais-les tremper dans l'eau (sinon elles brûlent).",
  "Coupe l'oignon en tout petits dés. Dans le saladier, mélange le bœuf haché cru, l'oignon, les épices (paprika, cumin, sel, poivre) et du persil.",
  "Étale une fine couche de viande sur chaque wrap, jusqu'aux bords, puis parsème de fromage râpé.",
  "Roule chaque wrap bien serré, puis coupe-le en tronçons de 3 cm avec un couteau bien aiguisé.",
@@ -258,7 +258,7 @@ sh_pommes:{u:["Poêle","Bol"],s:[
  "Termine avec les myrtilles, le chocolat haché et les amandes."]},
 sh_galette:{u:["Casserole","Plaque du four + papier cuisson","Presse-purée ou fourchette"],s:[
  "Lave les pommes de terre et cuis-les entières 20 min dans de l'eau salée, jusqu'à ce qu'un couteau s'y enfonce facilement.",
- "Préchauffe le four à 210 °C.",
+ "Préchauffe le four 10 min avant (réglages dans « Réglage du four » en bas de la recette).",
  "Égoutte, pose les pommes de terre sur la plaque et écrase-les grossièrement à la fourchette pour former une grande galette d'1-2 cm d'épaisseur.",
  "Arrose d'huile, parsème de parmesan, sel et poivre. Enfourne 25 min : les bords doivent être bien dorés et croustillants.",
  "Laisse tiédir 5 min (sinon le fromage blanc fond).",
@@ -278,7 +278,7 @@ ap_onepot:{u:["Grande cocotte","Casserole","4 boîtes de conservation"],s:[
  "Hors du feu, ajoute le fromage blanc dans la cocotte et mélange.",
  "Ajoute les pâtes égouttées, mélange, puis répartis dans les boîtes. Ferme quand c'est tiède et mets au frigo : 4 repas prêts."]},
 ap_crispy:{u:["Mandoline","Plaque du four + papier cuisson","2 bols","Casserole"],s:[
- "Préchauffe le four à 200 °C.",
+ "Préchauffe le four 10 min avant (réglages dans « Réglage du four » en bas de la recette).",
  RIZ,
  "Coupe le poulet en bouchées. Sale, poivre.",
  "Mets la chapelure dans un bol et roule chaque bouchée dedans pour bien l'enrober. Pose-les sur la plaque.",
@@ -301,4 +301,43 @@ ap_oats:{u:["Bocaux avec couvercle","Bol","Shaker électrique"],s:[
  "Ferme et laisse une nuit au frigo. Prépare 3-4 bocaux d'un coup pour la semaine."]}
 };
 window.RECIPES.forEach(function(r){var d=window.STEPS[r.id];if(d){r.s=d.s;r.u=d.u}});
+})();
+
+// ---- Réglages précis : four (symbole + température + temps) et Cookeo Touch (mode manuel) ----
+(function(){
+// four : m = mode (tournante, trad), t = température chaleur tournante, tt = traditionnel, min = durée, g = gradin
+var OV={
+ saumonpd:{t:190,tt:200,min:"15 + 12",g:"milieu",note:"Patate douce 15 min, puis ajoute le saumon sur la plaque pour 12 min."},
+ tofubowl:{t:190,tt:200,min:"25",g:"milieu",note:"Retourne les cubes de patate douce à mi-cuisson."},
+ steakpdt:{t:200,tt:210,min:"30",g:"milieu",note:"Retourne les pommes de terre à mi-cuisson pour qu'elles dorent des deux côtés."},
+ pouletsem:{t:190,tt:200,min:"25",g:"milieu",note:"Remue le poulet et les légumes à mi-cuisson."},
+ sh_brochettes:{t:190,tt:200,min:"20",g:"milieu",note:"Les tronçons doivent être dorés sur les bords."},
+ sh_galette:{t:200,tt:210,min:"25",g:"milieu-bas",note:"Plus bas dans le four = dessous plus croustillant."},
+ ap_crispy:{t:190,tt:200,min:"15 à 18",g:"milieu",note:"Retourne les bouchées à mi-cuisson si tu peux."}
+};
+// Cookeo Touch, Mode manuel : [mode, intensité, minutes, couvercle, quoi]
+var F="fermé et verrouillé",O="ouvert";
+var RIZC=["Pression","Haute",8,F,"Riz rincé + 1,5 fois son volume d'eau + une pincée de sel"];
+var CK={
+ chili:[["Rissoler","Fort",5,O,"Oignon et poivron 2 min, puis le bœuf émietté"],["Pression","Haute",8,F,"Ajoute épices, tomates, haricots rouges et 100 ml d'eau"]],
+ currypc:[["Rissoler","Moyen",3,O,"Oignon + curry"],["Pression","Haute",5,F,"Pois chiches, courgette, tomates, lait de coco et 50 ml d'eau"]],
+ dahl:[["Rissoler","Moyen",3,O,"Oignon + curry et cumin"],["Pression","Haute",6,F,"Lentilles, carottes râpées, tomates, lait de coco et 300 ml d'eau"]],
+ bololent:[["Rissoler","Moyen",4,O,"Oignon et carotte râpée"],["Pression","Haute",6,F,"Lentilles, tomates et 150 ml d'eau (pâtes à part)"]],
+ risotto:[["Rissoler","Fort",5,O,"Poulet en dés, puis retire-le dans une assiette"],["Rissoler","Moyen",3,O,"Oignon, champignons et riz"],["Pression","Haute",6,F,"Ajoute l'eau chaude + bouillon (2,5 fois le volume du riz)"]],
+ soupebut:[["Rissoler","Moyen",2,O,"Oignon"],["Pression","Haute",10,F,"Butternut, lentilles et eau juste à hauteur, puis mixe"]],
+ cabipuree:[["Pression","Haute",8,F,"Pommes de terre en morceaux + 200 ml d'eau, puis écrase avec le lait"],["Vapeur","Douce",6,F,"Cabillaud dans le panier vapeur (après avoir vidé la cuve)"]],
+ pouletsem:[["Rissoler","Fort",5,O,"Poulet et légumes"],["Pression","Basse",4,F,"Ajoute 50 ml d'eau (semoule à part)"]],
+ ap_onepot:[["Rissoler","Fort",5,O,"Oignon puis bœuf émietté"],["Pression","Haute",5,F,"Épices, tomates, pâtes et eau juste à hauteur des pâtes"],["Réchauffer","",0,O,"Coupe, ajoute le fromage blanc et mélange"]],
+ sh_pates:[["Rissoler","Fort",5,O,"Oignon puis bœuf émietté, ail et paprika"],["Pression","Haute",5,F,"Tomates, pâtes et eau juste à hauteur des pâtes"],["Réchauffer","",0,O,"Ajoute mascarpone et parmesan, mélange"]],
+ sh_pouletcreme:[["Rissoler","Fort",5,O,"Poulet, oignon et ail"],["Pression","Haute",8,F,"Pommes de terre en morceaux + 100 ml d'eau, puis fromage blanc hors cuisson"]],
+ ap_mealprep:[RIZC],
+ teriyaki:[RIZC,["Vapeur","Boost",4,F,"Brocoli dans le panier vapeur"]],
+ dinde:[["Rissoler","Fort",5,O,"Dinde, oignon et champignons"],["Pression","Haute",8,F,"Ajoute le riz rincé + 1,5 fois son volume d'eau"]],
+ ap_crispy:[RIZC],
+ poke:[RIZC],
+ rizcrevette:[RIZC],
+ porridge:[["Mijoter","Moyen",4,O,"Avoine + lait, remue une fois à mi-cuisson"]],
+ rizmiel:[["Pression","Basse",6,F,"Riz + lait"],["Mijoter","Douce",2,O,"Ajoute le miel et remue"]]
+};
+window.RECIPES.forEach(function(r){r.ck=CK[r.id]||null;r.ov=OV[r.id]||null});
 })();

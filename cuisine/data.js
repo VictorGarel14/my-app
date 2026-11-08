@@ -218,29 +218,5 @@ window.RECIPES.push(
 );
 window.CREATORS=[["@soufiane.haloui","Repas high protein"],["@flavietaste","Desserts"],["@macuisine.fit","Cuisine fit"],["@orlane.dbe","Recettes healthy"],["@rbellfit10","Fitness & recettes"],["@neoselfapp","Recettes healthy"],["@alex_pyx2","Meal prep & bocaux"]];
 
-// Astuces matériel de Victor : Cookeo Touch (ck) et shaker électrique (sk)
-(function(){var T={
- chili:{ck:"Mode Dorer : oignon, poivron puis bœuf (5 min). Ajoute épices, tomates, haricots et 100 ml d'eau, puis Cuisson sous pression 8 min. Riz à part ou au Cookeo (ci-dessous)."},
- currypc:{ck:"Dorer l'oignon et le curry 2 min, ajoute le reste (sauf le riz) et 50 ml d'eau, puis sous pression 5 min."},
- dahl:{ck:"Dorer l'oignon et les épices 2 min, ajoute lentilles, carottes, tomates, coco et 300 ml d'eau : sous pression 6 min."},
- bololent:{ck:"Dorer oignon et carotte 3 min, ajoute lentilles, tomates et 150 ml d'eau : sous pression 6 min. Pâtes à part."},
- risotto:{ck:"Dorer oignon, champignons et riz 3 min, ajoute 2,5 fois le volume de riz en eau chaude : sous pression 6 min, puis poulet et parmesan."},
- soupebut:{ck:"Dorer l'oignon 2 min, ajoute butternut, lentilles et eau à hauteur : sous pression 10 min, puis mixe."},
- cabipuree:{ck:"Pommes de terre en morceaux + 200 ml d'eau : sous pression 8 min, puis écrase avec le lait."},
- pouletsem:{ck:"Version rapide : dorer le poulet et les légumes 5 min, ajoute 50 ml d'eau, sous pression 4 min. Semoule à part."},
- ap_onepot:{ck:"Dorer oignon et bœuf 5 min, ajoute épices, tomates, pâtes et eau juste à hauteur : sous pression 5 min. Fromage blanc à la fin, hors pression."},
- sh_pates:{ck:"Dorer oignon et bœuf 5 min, ajoute ail, paprika, tomates, pâtes et eau à hauteur : sous pression 5 min. Mascarpone et parmesan à la fin."},
- sh_pouletcreme:{ck:"Dorer le poulet et l'oignon 5 min, ajoute les pommes de terre et 100 ml d'eau : sous pression 8 min. Fromage blanc à la fin."},
- ap_mealprep:{ck:"Riz au Cookeo : 1 volume de riz + 1,5 volume d'eau, sous pression 8 min pendant que tu fais le poulet.",sk:"Mixe soja, lait de coco et beurre de cacahuète au shaker : sauce lisse en 10 secondes."},
- teriyaki:{ck:"Riz au Cookeo : 1 volume de riz + 1,5 volume d'eau, sous pression 8 min."},
- dinde:{ck:"Dorer dinde, oignon et champignons 5 min, ajoute le riz et 1,5 fois son volume d'eau : sous pression 8 min. Fromage blanc à la fin."},
- ap_crispy:{ck:"Riz au Cookeo : 1 volume de riz + 1,5 volume d'eau, sous pression 8 min."},
- smoothie:{sk:"Mets lait, skyr, banane et fruits rouges dans le shaker électrique : 20 secondes et c'est lisse."},
- overnight:{sk:"Mixe le lait et le skyr au shaker avant de verser sur l'avoine : texture plus crémeuse."},
- ap_oats:{sk:"Mélange le skyr avec ta protéine chocolat au shaker : pas de grumeaux."},
- sh_pommes:{sk:"Si tu utilises de la protéine en poudre, mixe-la au shaker avec un peu de lait avant de l'ajouter au yaourt."},
- sh_bouchees:{sk:"Fais la pâte (avoine, œuf, lait, fromage blanc) directement au shaker électrique."},
- pancakes:{sk:"Mixe œufs, banane et avoine au shaker électrique : pâte prête en 30 secondes."},
- porridge:{ck:"Avoine + lait en mode Mijoter 4 min, en remuant une fois."},
- rizmiel:{ck:"Riz + lait sous pression 6 min, puis 2 min en Mijoter avec le miel."}
-};window.RECIPES.forEach(function(r){var t=T[r.id];if(t){if(t.ck)r.ck=t.ck;if(t.sk)r.sk=t.sk}})})();
+// Astuces shaker électrique (sk)
+(function(){var T={ap_mealprep:"Mixe soja, lait de coco et beurre de cacahuète au shaker : sauce lisse en 10 secondes.",smoothie:"Mets lait, skyr, banane et fruits rouges dans le shaker électrique : 20 secondes et c'est lisse.",overnight:"Mixe le lait et le skyr au shaker avant de verser sur l'avoine : texture plus crémeuse.",ap_oats:"Mélange le skyr avec ta protéine chocolat au shaker : pas de grumeaux.",sh_pommes:"Si tu utilises de la protéine en poudre, mixe-la au shaker avec un peu de lait avant de l'ajouter au yaourt.",sh_bouchees:"Fais la pâte (avoine, œuf, lait, fromage blanc) directement au shaker électrique.",pancakes:"Mixe œufs, banane et avoine au shaker électrique : pâte prête en 30 secondes."};window.RECIPES.forEach(function(r){if(T[r.id])r.sk=T[r.id]})})();
