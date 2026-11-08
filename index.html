@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><meta name="theme-color" content="#8b2fd9"><title>Mes applis</title>
+<link rel="icon" type="image/png" href="budget/icons/icon-192.png">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Rubik:wght@500;700;800&display=swap">
+<style>
+:root{--ink:#24124a;--grad:linear-gradient(135deg,#3448e6 0%,#8b2fd9 48%,#ff2a93 100%)}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;font:16px/1.45 Rubik,system-ui,sans-serif;color:var(--ink);background:linear-gradient(170deg,#c6a5f6 0%,#e9b8ea 45%,#ffbfe0 100%) fixed;padding:calc(28px + env(safe-area-inset-top)) 18px 40px}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.18) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.18) 1px,transparent 1px);background-size:6px 6px}
+main{position:relative;max-width:520px;margin:0 auto}
+h1{font-family:"Bagel Fat One",Rubik,sans-serif;font-weight:400;font-size:38px;margin:0 0 6px;color:#fff;-webkit-text-stroke:2px var(--ink);paint-order:stroke fill;text-shadow:3px 3px 0 var(--ink)}
+p{margin:0 0 20px;font-weight:500}
+a.app{display:flex;align-items:center;gap:16px;background:#fff8fc;border:2.5px solid var(--ink);border-radius:20px;padding:14px;margin-bottom:14px;box-shadow:4px 4px 0 var(--ink);color:var(--ink);text-decoration:none}
+a.app:active{transform:translate(2px,2px);box-shadow:2px 2px 0 var(--ink)}
+a.app img{width:72px;height:72px;border-radius:18px;border:2.5px solid var(--ink)}
+a.app b{font-family:"Bagel Fat One",Rubik,sans-serif;font-weight:400;font-size:22px;display:block}
+a.app span{font-size:14px;color:#6d5a8f}
+.tip{background:#e6f25a;border:2.5px solid var(--ink);border-radius:16px;padding:12px 14px;font-size:14px;font-weight:500;box-shadow:3px 3px 0 var(--ink);margin-top:22px}
+</style></head><body><main>
+<h1>Mes applis</h1><p>Budget & cuisine, pensés pour la saison trail.</p>
+<a class="app" href="budget/"><img src="budget/icons/icon-192.png" alt=""><div><b>Mon budget</b><span>Dépenses, reste à vivre, investissement</span></div></a>
+<a class="app" href="cuisine/"><img src="cuisine/icons/icon-192.png" alt=""><div><b>Ma cuisine</b><span>Repas healthy, recettes, liste de courses</span></div></a>
+<div class="tip"><b>Sur iPhone :</b> ouvre une appli dans Safari, touche <b>Partager</b> puis <b>« Sur l'écran d'accueil »</b>. Fais-le pour chacune des deux.</div>
+</main></body></html>
