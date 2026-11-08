@@ -62,7 +62,10 @@ window.ING = {
   citron:{n:"Citron",r:"Fruits & légumes",u:"pc",p:0.5},
   banane:{n:"Bananes",r:"Fruits & légumes",u:"pc",p:0.25},
   pomme:{n:"Pommes",r:"Fruits & légumes",u:"pc",p:0.4},
-  kiwi:{n:"Kiwis",r:"Fruits & légumes",u:"pc",p:0.4}
+  kiwi:{n:"Kiwis",r:"Fruits & légumes",u:"pc",p:0.4},
+  cottage:{n:"Cottage cheese",r:"Frais",u:"g",p:8},
+  mascarpone:{n:"Mascarpone",r:"Frais",u:"g",p:9},
+  pistache:{n:"Crème de pistache",r:"Épicerie",u:"g",p:30}
 };
 
 // Recettes (1 portion) : t = type (pdj, plat, snack), m = minutes, k = kcal, P/G/L = protéines/glucides/lipides (g), valeurs indicatives
@@ -167,3 +170,32 @@ window.RECIPES = [
   {id:"tartbc",t:"snack",n:"Tartine beurre de cacahuète-banane",m:3,k:300,P:10,G:40,L:11,tags:["rapide","avant"],
    i:[["pain",50],["bcaca",15],["banane",0.5]],s:["Tartiner, ajouter la banane en rondelles."]}
 ];
+
+// ---- Inspirées de vidéos TikTok envoyées par Victor (étapes réécrites, quantités adaptées pour 1 portion) ----
+window.RECIPES.push(
+  {id:"sh_pates",t:"plat",n:"Pâtes crémeuses bœuf, paprika fumé & mascarpone",m:25,k:760,P:46,G:80,L:27,tags:["recup","batch"],src:{by:"@soufiane.haloui",url:"https://www.tiktok.com/@soufiane.haloui"},
+   i:[["pates",100],["oignon",40],["boeuf",125],["ail",1],["epices",3],["tomconc",100],["mascarpone",35],["parmesan",10]],
+   s:["Faire revenir l'oignon en dés, puis le bœuf haché jusqu'à ce qu'il soit bien doré.","Ajouter l'ail et le paprika fumé, puis les tomates concassées et un fond d'eau (ou de bouillon). Laisser réduire 10 min.","Hors du feu, faire fondre le mascarpone et la moitié du parmesan dans la sauce.","Mélanger avec les pâtes, finir avec le reste du parmesan et un peu de persil."]},
+  {id:"sh_cottage",t:"plat",n:"Bowl cottage cheese, thon épicé & avocat",m:10,k:620,P:48,G:40,L:28,tags:["rapide","recup"],src:{by:"@soufiane.haloui",url:"https://www.tiktok.com/@soufiane.haloui"},
+   i:[["cottage",200],["thon",100],["avocat",0.5],["oignon",20],["pain",60],["citron",0.25]],
+   s:["Étaler le cottage cheese au fond d'une assiette creuse.","Mélanger le thon avec un peu de paprika ou de sauce piquante, le déposer au centre.","Ajouter l'avocat en tranches, un peu d'oignon rouge, des herbes et un filet de citron.","Servir avec le pain grillé pour les glucides (ma version : la vidéo n'en met pas)."]},
+  {id:"sh_brochettes",t:"plat",n:"Brochettes de wraps roulés au bœuf épicé, sauce yaourt-herbes",m:35,k:680,P:52,G:63,L:21,tags:["recup"],src:{by:"@soufiane.haloui",url:"https://www.tiktok.com/@soufiane.haloui"},
+   i:[["wrap",2],["boeuf",150],["oignon",40],["epices",3],["mozza",20],["fblanc",80],["concombre",0.5],["tomate",80]],
+   s:["Mélanger le bœuf cru avec l'oignon mixé, les épices et du persil.","Étaler une fine couche sur chaque wrap, parsemer de fromage râpé, puis rouler serré.","Couper en tronçons, les piquer sur des brochettes et cuire 20 min à 200 °C.","Servir avec le fromage blanc mélangé aux herbes, du concombre et des tomates."]},
+  {id:"sh_skyrvert",t:"pdj",n:"Bowl skyr pistache, banane caramélisée & fruits rouges",m:10,k:560,P:32,G:66,L:15,tags:["rapide","recup"],src:{by:"@soufiane.haloui",url:"https://www.tiktok.com/@soufiane.haloui"},
+   i:[["skyr",200],["pistache",15],["banane",1],["miel",5],["frouge",80],["avoine",30],["bcaca",10]],
+   s:["Couper la banane en deux dans la longueur et la dorer 2-3 min par face à la poêle avec le miel.","Mélanger le skyr avec la crème de pistache et l'étaler dans une assiette.","Ajouter la banane caramélisée, les fruits rouges, l'avoine (ou du granola) et le beurre de cacahuète."]},
+  {id:"sh_bouchees",t:"pdj",n:"Bouchées banane façon pancake, sauce cacahuète",m:15,k:570,P:27,G:70,L:18,tags:["avant"],src:{by:"@soufiane.haloui",url:"https://www.tiktok.com/@soufiane.haloui"},
+   i:[["banane",1],["oeuf",1],["avoine",50],["lait",80],["fblanc",50],["bcaca",15],["frouge",80]],
+   s:["Mixer l'avoine, l'œuf, le lait et le fromage blanc pour faire une pâte épaisse.","Couper la banane en rondelles et les enrober de pâte.","Cuire les bouchées à la poêle légèrement huilée, 2 min de chaque côté.","Servir avec les fruits rouges et le beurre de cacahuète détendu avec un peu de lait."]},
+  {id:"sh_pommes",t:"pdj",n:"Bowl yaourt protéiné, pommes poêlées à la cannelle",m:10,k:550,P:32,G:67,L:15,tags:["rapide"],src:{by:"@soufiane.haloui",url:"https://www.tiktok.com/@soufiane.haloui"},
+   i:[["avoine",40],["pomme",1],["miel",5],["epices",1],["skyr",200],["frouge",50],["choco",10],["amande",15]],
+   s:["Faire griller l'avoine 5 min à sec dans une poêle.","Faire revenir la pomme en dés avec la cannelle et le miel, 4-5 min.","Verser le skyr dans un bol (ou un yaourt + une dose de protéine), ajouter l'avoine et la pomme.","Finir avec les myrtilles, quelques carrés de chocolat noir et les amandes."]},
+  {id:"sh_galette",t:"plat",n:"Galette de pommes de terre écrasées, saumon fumé & fromage blanc",m:40,k:530,P:32,G:55,L:17,tags:["recup"],src:{by:"@soufiane.haloui",url:"https://www.tiktok.com/@soufiane.haloui"},
+   i:[["pdt",300],["huile",5],["parmesan",10],["fblanc",80],["saumonf",70],["salade",0.2],["citron",0.25]],
+   s:["Cuire les pommes de terre à l'eau, les écraser grossièrement sur une plaque recouverte de papier cuisson.","Arroser d'huile, parsemer de parmesan et cuire 25 min à 210 °C pour une galette croustillante.","Laisser tiédir, étaler le fromage blanc citronné, puis ajouter le saumon fumé et la roquette."]},
+  {id:"sh_pouletcreme",t:"plat",n:"Poulet crémeux & pommes de terre fondantes",m:30,k:520,P:46,G:50,L:12,tags:["recup","batch"],src:{by:"@soufiane.haloui",url:"https://www.tiktok.com/@soufiane.haloui"},
+   i:[["poulet",150],["pdt",250],["fblanc",80],["oignon",40],["ail",1],["huile",5],["epices",2]],
+   s:["Couper les pommes de terre en morceaux et les cuire 12 min à l'eau.","Dorer le poulet assaisonné dans la poêle avec l'huile, puis l'oignon et l'ail.","Ajouter les pommes de terre pour les faire dorer, puis, hors du feu, le fromage blanc et un peu d'eau de cuisson pour une sauce crémeuse."]}
+);
+window.CREATORS=[["@soufiane.haloui","Repas high protein"],["@flavietaste","Desserts"],["@macuisine.fit","Cuisine fit"],["@orlane.dbe","Recettes healthy"],["@rbellfit10","Fitness & recettes"],["@neoselfapp","Recettes healthy"],["@Pyx",""]];

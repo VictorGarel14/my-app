@@ -1,5 +1,5 @@
 // Hors ligne : on garde l'appli en cache et on la met à jour en arrière-plan.
-const CACHE = "cuisine-v2";
+const CACHE = "cuisine-v3";
 const SHELL = ["./", "index.html", "data.js", "manifest.webmanifest", "icons/icon-192.png", "icons/apple-touch-icon.png"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL))); self.skipWaiting(); });
 self.addEventListener("activate", e => {
