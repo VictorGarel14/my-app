@@ -1,5 +1,5 @@
 /* Victor Trail : fonctionne hors ligne (réseau d'abord pour les données, cache en secours) */
-const V='vt-os-6';
+const V='vt-os-7';
 const CORE=['./','index.html','anim.js','manifest.webmanifest','icons/icon-192.png','icons/apple-touch-icon.png','icons/icon-512.png','tcg.js','cartes/cards.json','parcours.js','parcours.json'];
 self.addEventListener('install',e=>{e.waitUntil(caches.open(V).then(c=>Promise.all(CORE.map(u=>c.add(u).catch(()=>{})))).then(()=>self.skipWaiting()))});
 self.addEventListener('activate',e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==V&&x!=='vt-tiles').map(x=>caches.delete(x)))).then(()=>self.clients.claim()))});
@@ -11,7 +11,7 @@ self.addEventListener('fetch',e=>{const u=new URL(e.request.url);if(e.request.me
   // bibliothèques et polices : cache d'abord
   if(/cdnjs\.cloudflare\.com|fonts\.(googleapis|gstatic)\.com/.test(u.hostname)){e.respondWith(caches.match(e.request).then(m=>m||net(e.request,V)));return}
   // météo, routes : réseau, sinon dernière réponse
-  if(/api\.open-meteo\.com|router\.project-osrm\.org/.test(u.hostname)){e.respondWith(net(e.request,V).catch(()=>caches.match(e.request)));return}
+  if(/api\.open-meteo\.com|router\.project-osrm\.org|brouter\.de/.test(u.hostname)){e.respondWith(net(e.request,V).catch(()=>caches.match(e.request)));return}
   if(u.origin!==location.origin)return;
   // live.json et pages : réseau d'abord, cache si pas de réseau
   e.respondWith(net(e.request,V).catch(()=>caches.match(e.request,{ignoreSearch:/live\.json$/.test(u.pathname)}).then(m=>m||caches.match('index.html'))))});
