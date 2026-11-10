@@ -40,6 +40,10 @@
 .tcg-art{position:relative;width:100%;height:100%;border-radius:3.5cqw;overflow:hidden;border:.65cqw solid #1a1033;background:linear-gradient(160deg,#ffb3dc 0%,#ff5fbf 35%,#b66bff 65%,#5fe0e0 100%)}
 .tcg-art img{position:absolute;left:0;top:-3cqw;width:100%;height:auto;display:block}
 .tcg-ph{position:absolute;left:6cqw;right:6cqw;top:18cqw;height:56cqw;box-sizing:border-box;border:.65cqw dashed rgba(26,16,51,.5);border-radius:3cqw;background:rgba(255,255,255,.28);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2cqw;text-align:center;color:#1a1033;font:900 4.2cqw var(--d);text-transform:uppercase}
+.tcg-full{position:relative;width:100%;height:100%;border-radius:4.2cqw;overflow:hidden;box-shadow:1.6cqw 1.8cqw 0 #1a1033;background:#1a1033}
+.tcg-full img{width:100%;height:100%;object-fit:cover;display:block}
+.tcg-b .vl{position:relative;width:16cqw;height:auto}
+.tcg-hd .tcg-sig{margin:6px 0 0;font:italic 600 .86rem/1.3 var(--f,system-ui);letter-spacing:0;text-transform:none;opacity:.95}
 .tcg-ph svg{width:10cqw;height:10cqw}
 .tcg-sheen{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;background:linear-gradient(115deg,transparent 20%,rgba(255,255,255,.2) 30%,rgba(77,252,192,.18) 38%,rgba(255,10,140,.16) 46%,transparent 56%);background-size:200% 100%;animation:tcgHolo 6s linear infinite}
 .tcg-top{position:absolute;left:0;right:0;top:0;padding:3cqw 3.2cqw 5cqw;display:flex;align-items:flex-start;gap:2cqw;background:linear-gradient(180deg,rgba(26,16,51,.6),rgba(26,16,51,0))}
@@ -129,7 +133,7 @@
       STAR.replace('class="st"', 'class="st" style="left:12cqw;top:14cqw"') +
       STAR.replace('class="st"', 'class="st" style="right:12cqw;top:26cqw;animation-delay:.8s"') +
       STAR.replace('class="st"', 'class="st" style="left:18cqw;bottom:20cqw;animation-delay:1.4s"') +
-      '<div class="ttl">Victor<br>Trail</div><div class="emb"><b>' + String(s.n).padStart(2, '0') + '</b><span>sur ' + N + '</span></div><div class="ser">Série 01 · Diagonale 2027</div>';
+      '<svg class="vl" xmlns="http://www.w3.org/2000/svg" viewBox="14 6 76 84" aria-hidden="true"> <defs><linearGradient id="vg" x1="0" y1="0" x2=".35" y2="1"><stop offset="0" stop-color="#FF7A3D"/><stop offset=".3" stop-color="#E8338F"/><stop offset=".65" stop-color="#8A2FC4"/><stop offset="1" stop-color="#4E1E96"/></linearGradient></defs> <g fill="url(#vg)" stroke="#2A0B4A" stroke-width="2.2" stroke-linejoin="round"> <path d="M20.5 16.7H32L35.9 50 52.6 9.7H66.7L25.6 84.6H20.5Z"/> <path d="M69.2 26.9H85.1L72.3 45.6H82.6L42.3 84.6 58.5 55.1H49.2Z"/> </g></svg><div class="ttl">Vic’tory</div><div class="emb"><b>' + String(s.n).padStart(2, '0') + '</b><span>sur ' + N + '</span></div><div class="ser">Série 01 · Diagonale 2027</div>';
     if (st === 'locked') h += '<div class="lock"><span>' + LOCK + fmt(s.date) + '</span></div>';
     else if (st === 'empty') h += '<div class="lock"><span>En préparation</span></div>';
     else if (st === 'new') h += '<div class="tap">Touche pour dévoiler</div>';
@@ -137,6 +141,7 @@
   }
   function front(s) {
     var c = s.card || {};
+    if (c.full && c.img) return '<div class="tcg-card"><div class="tcg-full"><img src="cartes/' + esc(c.img) + '" alt="Carte ' + esc(c.title) + ' : ' + esc(c.text) + '" loading="lazy"><div class="tcg-sheen"></div></div></div>';
     var art = c.img ? '<img src="cartes/' + esc(c.img) + '" alt="Illustration de la carte ' + esc(c.title) + '" loading="lazy">'
       : '<div class="tcg-ph"><svg viewBox="0 0 24 24" fill="none" stroke="#1a1033" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M21 16 15 10 5 20"/></svg>Illustration<br>à venir</div>';
     return '<div class="tcg-card"><div class="tcg-c"><div class="tcg-art">' + art + '<div class="tcg-sheen"></div>' +
@@ -158,7 +163,7 @@
       var S = slots(D), R = revealed(), N = D.slots;
       var shown = S.filter(function (s) { return state(s, R) === 'shown'; }).length;
       var nxt = S.find(function (s) { return !s.open; });
-      var h = '<a class="back" href="#/plus">‹ Plus</a><div class="tcg-hd"><h1>Le Bestiaire</h1><p>' + esc(D.serie) + '</p></div>' +
+      var h = '<a class="back" href="#/plus">‹ Plus</a><div class="tcg-hd"><h1>Le Bestiaire</h1><p>' + esc(D.serie) + '</p><p class="tcg-sig">« Continuer à rêver, juste assez pour tenir debout »</p></div>' +
         '<div class="tcg-prog"><div class="t"><i style="width:' + (shown / N * 100).toFixed(1) + '%"></i></div><b>' + shown + ' / ' + N + '</b></div>' +
         '<p class="note" style="margin:-8px 0 16px">' + (nxt ? 'Prochaine carte le ' + fmt(nxt.date) + ' à ' + nxt.date.getHours() + ' h. ' : 'Toutes les cartes sont sorties. ') + 'La dernière se dévoile le jour de la Diagonale.</p><div class="tcg-grid">';
       S.forEach(function (s) {

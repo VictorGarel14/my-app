@@ -7,15 +7,16 @@
  "cards": [
   {
    "slot": 1,
-   "id": "mulet",
-   "title": "Le Mulet des Anges",
-   "pv": "2026",
-   "goal": "25 boucles",
-   "attack": "Prom’ Express",
-   "text": "Une mouette lui pique son gel au km 3. Victor passe en mode mulet supersonique, récupère le gel et finit la boucle avec un tour d’avance.",
-   "dmg": "120",
-   "motto": "Mouette 0 – Mulet 1",
-   "img": "img/s01-mulet.jpg"
+   "id": "victory",
+   "title": "The Beginning",
+   "full": true,
+   "pv": "1000",
+   "goal": "MUT60 🇿🇦",
+   "attack": "The Beginning",
+   "text": "Chaque jour posé avec intention augmente la détermination de 10 % pour le reste de la semaine.",
+   "dmg": "",
+   "motto": "« Continuer à rêver, juste assez pour tenir debout »",
+   "img": "img/s01-victory.jpg"
   },
   {
    "slot": 2,
