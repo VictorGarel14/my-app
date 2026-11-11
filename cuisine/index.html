@@ -195,7 +195,7 @@ function ovenCard(o){return '<div class="dev"><div class="dh2">🔥 Réglage du 
 function cookeoCard(l,prep){return '<div class="dev cko"><div class="dh2">🍲 Cookeo Touch · Mode manuel</div>'+(prep?'<div class="ckprep"><b>Avant de commencer</b>'+esc(prep)+'</div>':'')+l.map(function(x,i){return '<div class="cks"><span class="ckn">'+(i+1)+'</span><span class="cki">'+(CKI[x[0]]||'')+'</span><span class="ckt"><b>'+x[0]+(x[1]?' · '+x[1]:'')+(x[2]?' · '+x[2]+' min':'')+'</b><small>Couvercle '+x[3]+'</small>'+(i>0&&!/retire|vid/i.test(l[i-1][4])&&!/vid/i.test(x[4])?'<span class="keep">↳ Ne vide pas la cuve : tout reste dedans, ajoute par-dessus.</span>':'')+esc(x[4])+(x[0]==="Pression"&&i>0?'<span class="keep">Gratte bien le fond avant de fermer, pour que rien n\'attache.</span>':'')+(x[2]?'<br><button class="tmr" data-timer="'+x[2]+'">⏱ '+x[2]+' min</button>':'')+'</span></div>'}).join("")+(l.some(function(x){return x[0]==="Pression"})?'<div class="small mute" style="margin-top:6px">Pression : le temps démarre quand la pression est atteinte. À la fin, laisse la vapeur s\'échapper complètement avant d\'ouvrir.</div>':'')+'</div>'}
 function stepsHtml(r,L){return '<h2>Préparation <span class="small mute" style="font-family:Montserrat;font-size:13px">· touche une étape quand c\'est fait</span></h2><ol class="steps">'+L.map(function(st,i){var m=st.match(/(\d+)\s*min/);return '<li class="stp'+(STEPDONE[r.id+':'+i]?' done':'')+'" data-step="'+r.id+':'+i+'"><span>'+esc(st).replace(/(Mandoline : [^.]*\.)/,'<em class="mw">$1</em>')+'</span>'+(m?'<button class="tmr" data-timer="'+m[1]+'">⏱ '+m[1]+' min</button>':'')+'</li>'}).join("")+'</ol>'}
 function utenHtml(r,U){return (U&&U.length?'<h2>Ustensiles</h2><div class="utens">'+U.map(function(x){return '<span>'+(/mandoline/i.test(x)?'🔪 ':'')+esc(x)+'</span>'}).join("")+'</div>':'')}
-function srcTag(r){return r.src?'<span class="tt">♪ '+esc(r.src.by)+'</span>':""}
+function srcTag(r){if(r.pro)return '<span class="tt" style="background:#ff2a93">⚡ Prozis / AM</span>';return r.src?'<span class="tt">♪ '+esc(r.src.by)+'</span>':""}
 var root=document.getElementById("root");
 function defGrid(){var g=[];for(var i=0;i<7;i++)g.push(i<5?{m:true,d:false,s:true}:{m:true,d:true,s:true});return g}
 var S=null;try{S=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){}
@@ -214,8 +214,8 @@ function today(){var t=new Date();t.setMinutes(t.getMinutes()-t.getTimezoneOffse
 // ---------- génération ----------
 function hasAvoid(r){var a=S.avoid||[];return r.i.some(function(x){return a.indexOf(x[0])>=0})}
 function pool(type,tag){return RECIPES.filter(function(r){return r.t===type&&S.excl.indexOf(r.id)<0&&!hasAvoid(r)&&(!tag||r.tags.indexOf(tag)>=0)})}
-function pick(list,avoid){var c=list.filter(function(r){return avoid.indexOf(r.id)<0});if(!c.length)c=list;if(!c.length)return null;if(S.lowfat!==false){var lf=c.filter(function(r){return r.L*9/r.k<=0.22});if(lf.length>=2)c=lf;else{lf=c.filter(function(r){return r.L*9/r.k<=0.3});if(lf.length>=2)c=lf}}if(S.tt!==false){var cc=c.filter(function(r){return r.src});if(cc.length>=2)c=cc}
-var w=[];c.forEach(function(r){var n=1;if(S.lowfat!==false){var sh=r.L*9/r.k;n=sh<0.2?4:sh<0.25?2:1}if(r.src&&S.tt!==false)n=6;if(S.fav.indexOf(r.id)>=0)n+=2;for(var k=0;k<n;k++)w.push(r)});return w[Math.floor(Math.random()*w.length)].id}
+function pick(list,avoid){var c=list.filter(function(r){return avoid.indexOf(r.id)<0});if(!c.length)c=list;if(!c.length)return null;if(S.lowfat!==false){var lf=c.filter(function(r){return r.L*9/r.k<=0.22});if(lf.length>=2)c=lf;else{lf=c.filter(function(r){return r.L*9/r.k<=0.3});if(lf.length>=2)c=lf}}if(S.tt!==false){var cc=c.filter(function(r){return r.src||r.pro});if(cc.length>=2)c=cc}
+var w=[];c.forEach(function(r){var n=1;if(r.pro)n+=3;if(S.lowfat!==false){var sh=r.L*9/r.k;n=sh<0.2?4:sh<0.25?2:1}if(r.src&&S.tt!==false)n=6;if(S.fav.indexOf(r.id)>=0)n+=2;for(var k=0;k<n;k++)w.push(r)});return w[Math.floor(Math.random()*w.length)].id}
 var TP=null,GW=0;try{TP=JSON.parse(localStorage.getItem("vg-cuisine-train")||"null")}catch(e){}
 function isoD(d){var x=new Date(d);x.setMinutes(x.getMinutes()-x.getTimezoneOffset());return x.toISOString().slice(0,10)}
 function mondayOf(dt){var d=new Date(dt);d.setHours(12,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d}
@@ -253,7 +253,7 @@ if(!S.v3){S.v3=1;if(!S.avoid)S.avoid=["epinard","tofu","coriandre"];S.weeks=[]}
 if(!S.avoid){S.avoid=["epinard","tofu","coriandre"];S.weeks=[]}
 if(!S.v5){S.v5=1;["epinard","tofu","coriandre","brocoli","choufleur"].forEach(function(x){if(S.avoid.indexOf(x)<0)S.avoid.push(x)});S.weeks=[]}
 if(!S.kg)S.kg=70;if(!S.fixL)S.fixL=[2,3,4];
-if(!S.v8){S.v8=1;S.weeks=[]}
+if(!S.v9){S.v9=1;S.weeks=[]}
 if(!S.v6){S.v6=1;[0,1,5,6].forEach(function(i){S.grid[i].d=true});S.weeks=[]}
 if(!S.base)S.base=isoD(mondayOf(new Date()));(function(){var cm=isoD(mondayOf(new Date()));var moved=false;while(S.base<cm){S.weeks.shift();S.base=addD(S.base,7);if(S.week>0)S.week--;moved=true}if(moved)S.checked={}})();
 normalize();save();
@@ -304,7 +304,7 @@ h+='<div class="row"><span>Taille des portions<div class="small mute">Augmente-l
 
 function viewCourses(){var month=S.scope==="month";var weeks=month?S.weeks:[S.weeks[S.week]];var q=aggregate(weeks);var key=month?"month":"w"+S.week;var ck=S.checked[key]||{};
 var groups={},plac=[];Object.keys(q).forEach(function(id){if(ING[id].s){plac.push(id);return}var r=ING[id].r;(groups[r]=groups[r]||[]).push(id)});
-var order=["Fruits & légumes","Boucherie & poisson","Frais","Boulangerie","Épicerie","Surgelés"];
+var order=["Prozis & AM Nutrition","Fruits & légumes","Boucherie & poisson","Frais","Boulangerie","Épicerie","Surgelés"];
 var total=costOf(q),nItems=Object.keys(q).length,nCk=Object.keys(q).filter(function(id){return ck[id]}).length;
 var h='<div class="wk"><button class="'+(!month?'on':'')+'" data-scope="week">Semaine '+(S.week+1)+'</button><button class="'+(month?'on':'')+'" data-scope="month">Mois (4 sem.)</button></div>';
 h+='<div class="card hero"><div class="lab">'+(month?'Courses du mois':'Courses de la semaine')+'</div><div class="big">≈ '+eur(total)+'</div><div class="sub">'+nCk+' / '+nItems+' articles dans le panier</div></div>';
@@ -315,11 +315,11 @@ h+='<div style="display:flex;gap:8px;margin-top:14px"><button class="btn" style=
 h+='<div class="note">Quantités calculées au plus juste à partir des recettes : arrondis au format vendu en magasin. Prix moyens estimés, modifiables dans l\'onglet Budget.</div>';return h}
 function itemRow(id,q,on){return '<label class="ck'+(on?' done':'')+'"><input type="checkbox" data-ck="'+id+'"'+(on?' checked':'')+'><span class="box"></span><span class="nm">'+esc(ING[id].n)+'<span class="small mute"> · '+fmtQty(id,q)+'</span></span><span class="v small">'+fmt2.format(ingCost(id,q))+'</span></label>'}
 
-function viewRecettes(){var F=[["tous","Toutes"],["pdj","Petit-déj"],["plat","Plats"],["snack","Collations"],["recup","Récup"],["avant","Avant sortie"],["batch","Batch"],["rapide","Rapide"],["budget","Petit budget"],["tiktok","♪ TikTok"],["four","🔥 Four"],["cookeo","🍲 Cookeo"],["shaker","🥤 Shaker"],["fav","♥ Favoris"]];
+function viewRecettes(){var F=[["tous","Toutes"],["pdj","Petit-déj"],["plat","Plats"],["snack","Collations"],["recup","Récup"],["avant","Avant sortie"],["batch","Batch"],["rapide","Rapide"],["budget","Petit budget"],["tiktok","♪ TikTok"],["pro","⚡ Mes produits"],["four","🔥 Four"],["cookeo","🍲 Cookeo"],["shaker","🥤 Shaker"],["fav","♥ Favoris"]];
 var h='<input type="search" id="q" placeholder="Rechercher une recette, un ingrédient…" value="'+esc(query)+'" style="margin-top:4px">';
 h+='<div class="chips" style="margin:10px 0 0">'+F.map(function(f){return '<button class="'+(filter===f[0]?'on':'')+'" data-filter="'+f[0]+'">'+f[1]+'</button>'}).join("")+'</div>';
 var ql=query.trim().toLowerCase();
-var list=RECIPES.filter(function(r){if(r.t==="ext")return false;if(filter==="fav"&&S.fav.indexOf(r.id)<0)return false;if(filter==="tiktok"&&!r.src)return false;if(filter==="cookeo"&&!r.ck)return false;if(filter==="four"&&!r.ov)return false;if(filter==="shaker"&&!r.sk)return false;if(["pdj","plat","snack"].indexOf(filter)>=0&&r.t!==filter)return false;if(TAGS[filter]&&r.tags.indexOf(filter)<0)return false;
+var list=RECIPES.filter(function(r){if(r.t==="ext")return false;if(filter==="fav"&&S.fav.indexOf(r.id)<0)return false;if(filter==="tiktok"&&!r.src)return false;if(filter==="pro"&&!r.pro)return false;if(filter==="cookeo"&&!r.ck)return false;if(filter==="four"&&!r.ov)return false;if(filter==="shaker"&&!r.sk)return false;if(["pdj","plat","snack"].indexOf(filter)>=0&&r.t!==filter)return false;if(TAGS[filter]&&r.tags.indexOf(filter)<0)return false;
 if(ql){var txt=(r.n+" "+r.i.map(function(x){return ING[x[0]].n}).join(" ")).toLowerCase();if(txt.indexOf(ql)<0)return false}return true});
 h+='<div class="small mute" style="margin:12px 2px 0">'+list.length+' recette'+(list.length>1?'s':'')+'</div>';
 h+=list.map(function(r){var ex=S.excl.indexOf(r.id)>=0;return '<div class="card rc'+(ex?' ex':'')+'" data-open="'+r.id+'"><div style="display:flex;justify-content:space-between;gap:8px"><div class="ttl">'+(S.fav.indexOf(r.id)>=0?'♥ ':'')+esc(r.n)+'</div><span class="small mute" style="white-space:nowrap">'+r.m+' min</span></div>'+recLine(r)+'<div class="tags">'+srcTag(r)+(r.ov?'<span class="eqt">🔥 Four</span>':'')+(r.ck?'<span class="eqt">🍲 Cookeo</span>':'')+(r.sk?'<span class="eqt">🥤 Shaker</span>':'')+r.tags.map(function(t){return '<span>'+TAGS[t]+'</span>'}).join("")+(ex?'<span class="x">Exclue</span>':'')+'</div></div>'}).join("");

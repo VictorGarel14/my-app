@@ -227,3 +227,42 @@ window.RECIPES.push({id:"ext_salade",t:"ext",n:"Salade du midi + dessert (achet�
  i:[["riz",50],["tomate",80],["mozza",60],["poulet",100],["oignon",20],["pain",20],["fblanc",150],["amande",15],["raisec",15],["miel",10]],
  desc:"Salade : riz basmati, tomates cerises, mozzarella, poulet épicé et nature, oignon rouge, croûtons, vinaigrette miel-moutarde. Dessert : fromage blanc, fruits secs et miel. Version légère : vinaigrette à part (n'en mets que la moitié) et sans croûtons, environ 15 g de lipides en moins.",
  s:["Repas acheté : rien à cuisiner.","Valeurs estimées pour une salade composée d'environ 400 g et un pot de fromage blanc de 150 g."]});
+
+// Produits de Victor : Prozis (pancakes, sauces zéro) et AM Nutrition (whey). Prix et valeurs repris des fiches produit, à ajuster.
+Object.assign(window.ING,{
+  prozpan:{n:"Prozis Pancake protéiné instantané",r:"Prozis & AM Nutrition",u:"g",p:21.6,brand:"https://www.prozis.com/fr/fr/prozis/pancake-proteine-instantane-1250-g"},
+  prozwhite:{n:"Prozis sauce zéro chocolat blanc",r:"Prozis & AM Nutrition",u:"g",p:18,brand:"https://www.prozis.com/fr/fr"},
+  prozhaz:{n:"Prozis sauce zéro noisette (hazelnut)",r:"Prozis & AM Nutrition",u:"g",p:18,brand:"https://www.prozis.com/fr/fr"},
+  prozchoc:{n:"Prozis sauce zéro chocolat",r:"Prozis & AM Nutrition",u:"g",p:18,brand:"https://www.prozis.com/fr/fr"},
+  whey:{n:"Whey isolate AM Nutrition (PURE)",r:"Prozis & AM Nutrition",u:"g",p:42.7,brand:"https://amnutrition.fr"}
+});
+window.RECIPES.push(
+ {id:"pro_pancakes",t:"pdj",pro:1,n:"Pancakes protéinés Prozis, banane & sauce chocolat blanc",m:15,k:560,P:44,G:74,L:9,tags:["recup","rapide"],
+  i:[["prozpan",60],["avoine",40],["lait",150],["banane",1],["frouge",80],["prozwhite",20]],
+  u:["Shaker électrique","Poêle antiadhésive","Spatule"],
+  s:["Mets la préparation Prozis (5 doseurs, 60 g), les flocons d'avoine et le lait dans le shaker électrique. Mixe 20 secondes : la pâte doit être épaisse mais coulante. Trop épaisse : ajoute un trait de lait.",
+     "Laisse reposer 2 min pendant que la poêle chauffe sur feu moyen-doux, avec quelques gouttes d'huile étalées à l'essuie-tout.",
+     "Verse une petite louche de pâte par pancake (3 à la fois). Cuis 1 à 2 min : quand des petites bulles apparaissent sur le dessus, retourne avec la spatule, puis cuis encore 1 min.",
+     "Recommence jusqu'à la fin de la pâte (environ 6 pancakes).",
+     "Fais tiédir les fruits rouges 1 min au micro-ondes.",
+     "Empile les pancakes, ajoute la banane en rondelles et les fruits rouges, puis nappe de sauce zéro chocolat blanc."]},
+ {id:"pro_shake",t:"snack",pro:1,n:"Shake récup whey AM Nutrition & banane",m:2,k:340,P:37,G:38,L:6,tags:["recup","rapide"],
+  i:[["whey",30],["lait",300],["banane",1]],
+  u:["Shaker électrique"],
+  s:["Verse le lait dans le shaker électrique, ajoute la banane en morceaux puis 1 dose de whey (30 g).",
+     "Mixe 15 à 20 secondes.",
+     "À boire dans les 30 min après la séance : c'est le meilleur moment pour récupérer."]},
+ {id:"pro_oats",t:"pdj",pro:1,n:"Overnight oats whey & sauce noisette",m:5,k:510,P:40,G:66,L:9,tags:["avant","batch","rapide"],
+  i:[["avoine",70],["lait",220],["whey",25],["banane",0.5],["prozhaz",20]],
+  u:["Shaker électrique","Bocal avec couvercle"],
+  s:["La veille : mixe le lait et la whey 10 secondes au shaker électrique (pas de grumeaux).",
+     "Verse sur l'avoine dans le bocal et mélange bien.",
+     "Ferme et laisse au frigo au moins 6 h.",
+     "Le matin : ajoute la demi-banane en rondelles et la sauce zéro noisette par-dessus."]},
+ {id:"pro_skyr",t:"snack",pro:1,n:"Skyr whey-chocolat, fruits rouges & sauce zéro",m:3,k:300,P:41,G:27,L:2,tags:["recup","rapide"],
+  i:[["skyr",200],["whey",15],["frouge",100],["prozchoc",15]],
+  u:["Bol"],
+  s:["Mélange le skyr et la demi-dose de whey dans un bol jusqu'à ce que ce soit lisse.",
+     "Ajoute les fruits rouges (décongelés 1 min au micro-ondes si besoin).",
+     "Nappe de sauce zéro chocolat."]}
+);
