@@ -53,13 +53,13 @@ smoothie:{u:["Shaker électrique ou blender","Bol"],s:[
  "Mixe 20 à 30 secondes jusqu'à ce que ce soit bien lisse. Trop épais : ajoute un peu de lait.",
  "Verse dans un bol et parsème de flocons d'avoine.",
  "À prendre dans l'heure qui suit la séance pour bien récupérer."]},
-teriyaki:{u:["Casserole","Poêle","Cuit-vapeur ou passoire + couvercle","Petit bol"],s:[
+teriyaki:{u:["2 casseroles","Poêle","Passoire","Petit bol"],s:[
  RIZ,
- "Coupe le brocoli en petits bouquets. Fais-le cuire à la vapeur 6 min (ou dans une passoire posée sur une casserole d'eau bouillante, avec un couvercle) : il doit rester vert vif et un peu croquant.",
+ "Coupe les bouts des haricots verts (s'ils sont surgelés, rien à faire). Plonge-les 8 min dans une casserole d'eau bouillante salée : ils doivent rester vert vif et un peu croquants. Égoutte.",
  "Dans un petit bol, mélange la sauce soja, le miel et l'ail râpé (ou écrasé).",
  "Coupe le poulet en dés de 2 cm. Fais chauffer la poêle sur feu vif avec un filet d'huile, ajoute le poulet et laisse dorer 6-7 min en remuant de temps en temps. Coupe un morceau : l'intérieur doit être blanc, plus rosé.",
  "Verse la sauce sur le poulet, remue 1 min : elle devient brillante et nappe les morceaux.",
- "Dans un bol : riz, brocoli, poulet, et le reste de sauce par-dessus."]},
+ "Dans un bol : riz, haricots verts, poulet, et le reste de sauce par-dessus."]},
 saumonpd:{u:["Plaque du four + papier cuisson","Casserole","Économe"],s:[
  "Préchauffe le four 10 min avant (réglages dans « Réglage du four » en bas de la recette).",
  "Épluche la patate douce à l'économe et coupe-la en cubes de 2 cm. Sur la plaque, mélange-les avec l'huile, du sel et du paprika.",
@@ -149,12 +149,12 @@ patesaumon:{u:["Mandoline","Casserole","Poêle"],s:[
  "Dans la poêle sur feu moyen-vif avec un filet d'huile, saisis le saumon 3 min, ajoute la courgette et cuis encore 3 min.",
  "Hors du feu, ajoute le fromage blanc, le zeste (la peau râpée) et le jus du demi-citron, une louche d'eau des pâtes, sel, poivre.",
  "Ajoute les pâtes égouttées et mélange doucement pour ne pas écraser le saumon."]},
-tofubowl:{u:["Plaque du four + papier cuisson","Casserole","Poêle","Passoire fine","Économe"],s:[
+tofubowl:{u:["Mandoline","Plaque du four + papier cuisson","Casserole","Poêle","Passoire fine","Économe"],s:[
  "Préchauffe le four 10 min avant (réglages dans « Réglage du four » en bas de la recette). Épluche la patate douce, coupe-la en cubes, mélange avec un filet d'huile et du sel sur la plaque, enfourne 25 min.",
  QUINOA,
- "Coupe le brocoli en petits bouquets et cuis-les 6 min à la vapeur ou dans l'eau bouillante.",
+ "Coupe la courgette en demi-rondelles à la mandoline. Poêle-la 5 min sur feu moyen avec un filet d'huile et une pincée de sel. Mandoline : utilise toujours le poussoir (protège-main), jamais les doigts à plat sur la lame.",
  "Coupe le poulet en dés. Poêle sur feu vif avec un filet d'huile 6 min, puis ajoute la sauce soja et laisse caraméliser 1 min.",
- "Assemble le bowl : quinoa, patate douce, brocoli, poulet."]},
+ "Assemble le bowl : quinoa, patate douce, courgette, poulet."]},
 steakpdt:{u:["Plaque du four + papier cuisson","Poêle"],s:[
  "Préchauffe le four 10 min avant (réglages dans « Réglage du four » en bas de la recette).",
  "Lave les pommes de terre (pas besoin de les éplucher), coupe-les en quartiers. Sur la plaque, mélange avec l'huile, sel, poivre et herbes de Provence.",
@@ -331,7 +331,7 @@ var CK={
  sh_pates:[["Rissoler","Fort",5,O,"Oignon puis bœuf émietté, ail et paprika"],["Pression","Haute",5,F,"Tomates, pâtes et eau juste à hauteur des pâtes"],["Réchauffer","",0,O,"Ajoute mascarpone et parmesan, mélange"]],
  sh_pouletcreme:[["Rissoler","Fort",5,O,"Poulet, oignon et ail"],["Pression","Haute",8,F,"Pommes de terre en morceaux + 100 ml d'eau, puis fromage blanc hors cuisson"]],
  ap_mealprep:[RIZC],
- teriyaki:[RIZC,["Vapeur","Boost",4,F,"Brocoli dans le panier vapeur"]],
+ teriyaki:[RIZC],
  dinde:[["Rissoler","Fort",5,O,"Dinde, oignon et champignons"],["Pression","Haute",8,F,"Ajoute le riz rincé + 1,5 fois son volume d'eau"]],
  ap_crispy:[RIZC],
  poke:[RIZC],
@@ -339,6 +339,6 @@ var CK={
  porridge:[["Mijoter","Moyen",4,O,"Avoine + lait, remue une fois à mi-cuisson"]],
  rizmiel:[["Pression","Basse",6,F,"Riz + lait"],["Mijoter","Douce",2,O,"Ajoute le miel et remue"]]
 };
-var PREP={"chili": "Coupe l'oignon en dés et le poivron en lanières (mandoline). Rince et égoutte les haricots rouges.", "currypc": "Coupe l'oignon en lamelles et la courgette en demi-rondelles. Rince et égoutte les pois chiches. Fais cuire le riz à côté (ou au Cookeo avant, voir l'étape riz).", "dahl": "Coupe l'oignon en dés, épluche et râpe les carottes.", "bololent": "Coupe l'oignon en dés, épluche et râpe la carotte. Les pâtes se cuisent à part dans une casserole.", "risotto": "Coupe l'oignon en dés, tranche les champignons (mandoline), coupe le poulet en dés. Prépare 600 ml d'eau chaude avec un cube de bouillon.", "soupebut": "Épluche la butternut, retire les graines, coupe-la en cubes. Coupe l'oignon en morceaux.", "cabipuree": "Épluche les pommes de terre et coupe-les en gros morceaux.", "pouletsem": "Coupe le poulet en morceaux, la courgette et la carotte en rondelles (mandoline), le poivron en lanières. Assaisonne avec l'huile et les épices.", "ap_onepot": "Coupe l'oignon en dés.", "sh_pates": "Coupe l'oignon en dés, hache l'ail.", "sh_pouletcreme": "Coupe le poulet en morceaux (sel, poivre, paprika), l'oignon en dés, hache l'ail, coupe les pommes de terre en morceaux de 3 cm.", "ap_mealprep": "Riz seulement au Cookeo : le poulet et les légumes se font à la poêle pendant que le riz cuit.", "teriyaki": "Riz et brocoli au Cookeo : le poulet se fait à la poêle pendant ce temps.", "dinde": "Coupe la dinde en lanières, l'oignon en dés, tranche les champignons (mandoline). Rince le riz.", "ap_crispy": "Riz seulement au Cookeo : le poulet se fait au four pendant ce temps.", "poke": "Riz seulement au Cookeo : prépare les crudités pendant la cuisson.", "rizcrevette": "Riz seulement au Cookeo (idéalement la veille) : le reste se fait à la poêle.", "porridge": "Rien à préparer.", "rizmiel": "Rince rapidement le riz."};
+var PREP={"chili": "Coupe l'oignon en dés et le poivron en lanières (mandoline). Rince et égoutte les haricots rouges.", "currypc": "Coupe l'oignon en lamelles et la courgette en demi-rondelles. Rince et égoutte les pois chiches. Fais cuire le riz à côté (ou au Cookeo avant, voir l'étape riz).", "dahl": "Coupe l'oignon en dés, épluche et râpe les carottes.", "bololent": "Coupe l'oignon en dés, épluche et râpe la carotte. Les pâtes se cuisent à part dans une casserole.", "risotto": "Coupe l'oignon en dés, tranche les champignons (mandoline), coupe le poulet en dés. Prépare 600 ml d'eau chaude avec un cube de bouillon.", "soupebut": "Épluche la butternut, retire les graines, coupe-la en cubes. Coupe l'oignon en morceaux.", "cabipuree": "Épluche les pommes de terre et coupe-les en gros morceaux.", "pouletsem": "Coupe le poulet en morceaux, la courgette et la carotte en rondelles (mandoline), le poivron en lanières. Assaisonne avec l'huile et les épices.", "ap_onepot": "Coupe l'oignon en dés.", "sh_pates": "Coupe l'oignon en dés, hache l'ail.", "sh_pouletcreme": "Coupe le poulet en morceaux (sel, poivre, paprika), l'oignon en dés, hache l'ail, coupe les pommes de terre en morceaux de 3 cm.", "ap_mealprep": "Riz seulement au Cookeo : le poulet et les légumes se font à la poêle pendant que le riz cuit.", "teriyaki": "Riz seulement au Cookeo : le poulet et les haricots verts se font pendant ce temps.", "dinde": "Coupe la dinde en lanières, l'oignon en dés, tranche les champignons (mandoline). Rince le riz.", "ap_crispy": "Riz seulement au Cookeo : le poulet se fait au four pendant ce temps.", "poke": "Riz seulement au Cookeo : prépare les crudités pendant la cuisson.", "rizcrevette": "Riz seulement au Cookeo (idéalement la veille) : le reste se fait à la poêle.", "porridge": "Rien à préparer.", "rizmiel": "Rince rapidement le riz."};
 window.RECIPES.forEach(function(r){r.ck=CK[r.id]||null;r.ckprep=PREP[r.id]||"";r.ov=OV[r.id]||null});
 })();
