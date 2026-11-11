@@ -225,5 +225,5 @@ window.CREATORS=[["@soufiane.haloui","Repas high protein"],["@flavietaste","Dess
 // Repas pris à l'extérieur (pas dans la liste de courses) : salade du midi les jours de bureau
 window.RECIPES.push({id:"ext_salade",t:"ext",n:"Salade du midi + dessert (achetés)",m:0,k:1020,P:61,G:94,L:42,tags:[],
  i:[["riz",50],["tomate",80],["mozza",60],["poulet",100],["oignon",20],["pain",20],["fblanc",150],["amande",15],["raisec",15],["miel",10]],
- desc:"Salade : riz basmati, tomates cerises, mozzarella, poulet épicé et nature, oignon rouge, croûtons, vinaigrette miel-moutarde. Dessert : fromage blanc, fruits secs et miel.",
+ desc:"Salade : riz basmati, tomates cerises, mozzarella, poulet épicé et nature, oignon rouge, croûtons, vinaigrette miel-moutarde. Dessert : fromage blanc, fruits secs et miel. Version légère : vinaigrette à part (n'en mets que la moitié) et sans croûtons, environ 15 g de lipides en moins.",
  s:["Repas acheté : rien à cuisiner.","Valeurs estimées pour une salade composée d'environ 400 g et un pot de fromage blanc de 150 g."]});

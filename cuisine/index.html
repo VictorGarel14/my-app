@@ -214,8 +214,8 @@ function today(){var t=new Date();t.setMinutes(t.getMinutes()-t.getTimezoneOffse
 // ---------- génération ----------
 function hasAvoid(r){var a=S.avoid||[];return r.i.some(function(x){return a.indexOf(x[0])>=0})}
 function pool(type,tag){return RECIPES.filter(function(r){return r.t===type&&S.excl.indexOf(r.id)<0&&!hasAvoid(r)&&(!tag||r.tags.indexOf(tag)>=0)})}
-function pick(list,avoid){var c=list.filter(function(r){return avoid.indexOf(r.id)<0});if(!c.length)c=list;if(!c.length)return null;if(S.tt!==false){var cc=c.filter(function(r){return r.src});if(cc.length)c=cc}
-var w=[];c.forEach(function(r){var n=1;if(r.src&&S.tt!==false)n=6;if(S.fav.indexOf(r.id)>=0)n+=2;for(var k=0;k<n;k++)w.push(r)});return w[Math.floor(Math.random()*w.length)].id}
+function pick(list,avoid){var c=list.filter(function(r){return avoid.indexOf(r.id)<0});if(!c.length)c=list;if(!c.length)return null;if(S.lowfat!==false){var lf=c.filter(function(r){return r.L*9/r.k<=0.22});if(lf.length>=2)c=lf;else{lf=c.filter(function(r){return r.L*9/r.k<=0.3});if(lf.length>=2)c=lf}}if(S.tt!==false){var cc=c.filter(function(r){return r.src});if(cc.length>=2)c=cc}
+var w=[];c.forEach(function(r){var n=1;if(S.lowfat!==false){var sh=r.L*9/r.k;n=sh<0.2?4:sh<0.25?2:1}if(r.src&&S.tt!==false)n=6;if(S.fav.indexOf(r.id)>=0)n+=2;for(var k=0;k<n;k++)w.push(r)});return w[Math.floor(Math.random()*w.length)].id}
 var TP=null,GW=0;try{TP=JSON.parse(localStorage.getItem("vg-cuisine-train")||"null")}catch(e){}
 function isoD(d){var x=new Date(d);x.setMinutes(x.getMinutes()-x.getTimezoneOffset());return x.toISOString().slice(0,10)}
 function mondayOf(dt){var d=new Date(dt);d.setHours(12,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d}
@@ -229,10 +229,10 @@ return{l:l,m:m,km:km,dp:dp,type:type}}
 function dayFactor(date){var t=dayTrain(date);return S.portion*(t?DT[t.type][2]:1)}
 // Besoins quotidiens (g/kg de poids) selon la séance du jour : repères de nutrition du sport d'endurance
 var NEED={repos:[4,1.6,1],leger:[5,1.7,1],salle:[4.5,2,1],moyen:[6,1.8,1],qualite:[7,1.8,1],longue:[9,2,1.2],course:[10,2,1.2]};
-function dayNeed(date){var t=dayTrain(date),ty=t?t.type:"moyen",n=NEED[ty],kg=num(S.kg)||70;var G=n[0]*kg,P=n[1]*kg,L=n[2]*kg;return{k:4*G+4*P+9*L,G:G,P:P,L:L,type:ty}}
+function dayNeed(date){var t=dayTrain(date),ty=t?t.type:"moyen",n=NEED[ty],kg=num(S.kg)||70;var G=n[0]*kg,P=n[1]*kg,L=(S.lowfat!==false?0.8:n[2])*kg;return{k:4*G+4*P+9*L,G:G,P:P,L:L,type:ty}}
 function dayGot(day,date,d){var f=dayFactor(date),o={k:0,G:0,P:0,L:0};var e=RB.ext_salade;if(e&&S.fixL.indexOf(d)>=0){o.k+=e.k;o.G+=e.G;o.P+=e.P;o.L+=e.L}SLOTS.forEach(function(sl){var r=RB[day[sl[0]]];if(r){o.k+=r.k*f;o.G+=r.G*f;o.P+=r.P*f;o.L+=r.L*f}});return o}
 function nutriHtml(day,date,d){var n=dayNeed(date),g=dayGot(day,date,d);var rows=[["Calories","k","kcal","#ff2a93"],["Glucides","G","g","#ffb020"],["Protéines","P","g","#8b2fd9"],["Lipides","L","g","#13a874"]];
-return '<div class="nut"><div class="nh"><b>Apports du jour</b><span>'+Math.round(g.k/n.k*100)+' % couverts par tes repas</span></div>'+rows.map(function(x){var need=n[x[1]],got=g[x[1]],p=Math.min(100,got/need*100);return '<div class="nr"><span class="nl">'+x[0]+'</span><span class="nb"><i style="width:'+p+'%;background:'+x[3]+'"></i></span><span class="nv"><b>'+Math.round(got)+'</b> / '+Math.round(need)+' '+x[2]+'</span></div>'}).join("")+'<div class="nn">Il te reste ≈ '+Math.max(0,Math.round(n.k-g.k))+' kcal dont '+Math.max(0,Math.round(n.G-g.G))+' g de glucides à trouver dans tes autres repas, collations et ravitos.</div></div>'}
+return '<div class="nut"><div class="nh"><b>Apports du jour</b><span>'+Math.round(g.k/n.k*100)+' % couverts par tes repas</span></div>'+rows.map(function(x){var need=n[x[1]],got=g[x[1]],p=Math.min(100,got/need*100),cap=x[1]==="L"&&S.lowfat!==false,over=cap&&got>need*1.05;return '<div class="nr"><span class="nl">'+x[0]+'</span><span class="nb"><i style="width:'+p+'%;background:'+(over?'#ff3b5c':x[3])+'"></i></span><span class="nv"><b>'+Math.round(got)+'</b> / '+(cap?'max ':'')+Math.round(need)+' '+x[2]+(over?' ⚠️':'')+'</span></div>'}).join("")+'<div class="nn">Il te reste ≈ '+Math.max(0,Math.round(n.k-g.k))+' kcal dont '+Math.max(0,Math.round(n.G-g.G))+' g de glucides à trouver dans tes autres repas, collations et ravitos.</div></div>'}
 function slotWant(d,slot){var date=dateOf(GW,d),t=dayTrain(date);if(t){var nx=dayTrain(addD(date,1));var big=t.type==="longue"||t.type==="course";
 if(big&&slot==="m")return "avant";if((big||t.type==="qualite")&&slot!=="m")return "recup";if(nx&&(nx.type==="longue"||nx.type==="course")&&slot==="s")return "avant";return null}
 var lr=S.longRun;if(lr<0)return null;var prev=(lr+6)%7;
@@ -253,6 +253,7 @@ if(!S.v3){S.v3=1;if(!S.avoid)S.avoid=["epinard","tofu","coriandre"];S.weeks=[]}
 if(!S.avoid){S.avoid=["epinard","tofu","coriandre"];S.weeks=[]}
 if(!S.v5){S.v5=1;["epinard","tofu","coriandre","brocoli","choufleur"].forEach(function(x){if(S.avoid.indexOf(x)<0)S.avoid.push(x)});S.weeks=[]}
 if(!S.kg)S.kg=70;if(!S.fixL)S.fixL=[2,3,4];
+if(!S.v8){S.v8=1;S.weeks=[]}
 if(!S.v6){S.v6=1;[0,1,5,6].forEach(function(i){S.grid[i].d=true});S.weeks=[]}
 if(!S.base)S.base=isoD(mondayOf(new Date()));(function(){var cm=isoD(mondayOf(new Date()));var moved=false;while(S.base<cm){S.weeks.shift();S.base=addD(S.base,7);if(S.week>0)S.week--;moved=true}if(moved)S.checked={}})();
 normalize();save();
@@ -294,6 +295,7 @@ function gridHtml(){var h='<div class="card"><b>Repas pris à la maison</b><tabl
 DAYS.forEach(function(dn,d){h+='<tr><td>'+dn.slice(0,3)+'.</td>'+SLOTS.map(function(s){var on=S.grid[d][s[0]];return '<td><button class="tg'+(on?' on':'')+'" data-grid="'+d+'.'+s[0]+'" aria-label="'+dn+' '+s[1]+'">'+(on?'✓':'')+'</button></td>'}).join("")+'</tr>'});
 h+='</table><div class="row"><span>Jour de sortie longue<div class="small mute">Utilisé seulement si VictorTrail est injoignable</div></span><span style="width:150px"><select id="longrun"><option value="-1"'+(S.longRun<0?' selected':'')+'>Aucun</option>'+DAYS.map(function(dn,d){return '<option value="'+d+'"'+(S.longRun===d?' selected':'')+'>'+dn+'</option>'}).join("")+'</select></span></div>';
 h+='<div class="row" style="display:block"><span>Salade achetée le midi<div class="small mute">Comptée dans tes apports, pas dans tes courses</div></span><div class="chips" style="margin:8px 0 2px">'+DAYS.map(function(dn,i){return '<button class="'+(S.fixL.indexOf(i)>=0?'on':'')+'" data-fixl="'+i+'">'+dn.slice(0,3)+'.</button>'}).join("")+'</div></div>';
+h+='<div class="row"><span>Lipides au minimum<div class="small mute">Plats les moins gras en priorité, plafond 0,8 g/kg/jour</div></span><span><button class="tg'+(S.lowfat!==false?' on':'')+'" data-act="lowfat" style="width:56px">'+(S.lowfat!==false?'✓':'')+'</button></span></div>';
 h+='<div class="row"><span>Ton poids (kg)<div class="small mute">Sert à calculer tes besoins du jour</div></span><span style="width:90px"><input type="number" inputmode="decimal" id="kg" value="'+S.kg+'"></span></div>';
 h+='<div class="row"><span>Collations / semaine</span><span style="width:90px"><input type="number" inputmode="numeric" id="snacks" value="'+S.snacks+'" min="0" max="14"></span></div>';
 var av=S.avoid||[];h+='<div class="row" style="display:block"><span>Je n\'aime pas<div class="small mute">Les recettes qui en contiennent ne sont plus proposées</div></span><div class="chips" style="margin:8px 0 4px">'+av.map(function(id){return '<button class="on" data-unavoid="'+id+'">'+esc(ING[id]?ING[id].n:id)+' ✕</button>'}).join("")+'</div><select id="addavoid"><option value="">+ Ajouter un ingrédient…</option>'+Object.keys(ING).filter(function(id){return av.indexOf(id)<0}).sort(function(a,b){return ING[a].n.localeCompare(ING[b].n)}).map(function(id){return '<option value="'+id+'">'+esc(ING[id].n)+'</option>'}).join("")+'</select></div>';
@@ -391,6 +393,7 @@ var act=ds.act;
 if(act==="close"){sheet=null;settings=false;render();return}
 if(act==="settings"){settings=true;resetArm=false;render();return}
 if(act==="regen"){S.weeks[S.week]=genWeek(S.week);save();rerender();toast("Nouvelle semaine générée");return}
+if(act==="lowfat"){S.lowfat=S.lowfat===false;S.weeks=[];normalize();save();rerender();toast(S.lowfat!==false?"Plannings refaits, version légère ✓":"Plannings refaits");return}
 if(act==="tt"){S.tt=S.tt===false;S.weeks=[];normalize();save();rerender();toast(S.tt!==false?"Plannings refaits avec tes recettes TikTok ✓":"Plannings refaits");return}
 if(act==="grid"){showGrid=!showGrid;rerender();return}
 if(act==="prices"){showPrices=!showPrices;rerender();return}
