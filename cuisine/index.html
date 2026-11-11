@@ -253,6 +253,7 @@ if(!S.v3){S.v3=1;if(!S.avoid)S.avoid=["epinard","tofu","coriandre"];S.weeks=[]}
 if(!S.avoid){S.avoid=["epinard","tofu","coriandre"];S.weeks=[]}
 if(!S.v5){S.v5=1;["epinard","tofu","coriandre","brocoli","choufleur"].forEach(function(x){if(S.avoid.indexOf(x)<0)S.avoid.push(x)});S.weeks=[]}
 if(!S.kg)S.kg=70;if(!S.fixL)S.fixL=[2,3,4];
+if(!S.v10){S.v10=1;S.scope="2w"}
 if(!S.v9){S.v9=1;S.weeks=[]}
 if(!S.v6){S.v6=1;[0,1,5,6].forEach(function(i){S.grid[i].d=true});S.weeks=[]}
 if(!S.base)S.base=isoD(mondayOf(new Date()));(function(){var cm=isoD(mondayOf(new Date()));var moved=false;while(S.base<cm){S.weeks.shift();S.base=addD(S.base,7);if(S.week>0)S.week--;moved=true}if(moved)S.checked={}})();
@@ -302,12 +303,17 @@ var av=S.avoid||[];h+='<div class="row" style="display:block"><span>Je n\'aime p
 h+='<div class="row"><span>Priorité aux recettes TikTok<div class="small mute">Tes créateurs en premier, les recettes de base seulement pour compléter</div></span><span><button class="tg'+(S.tt!==false?' on':'')+'" data-act="tt" style="width:56px">'+(S.tt!==false?'✓':'')+'</button></span></div>';
 h+='<div class="row"><span>Taille des portions<div class="small mute">Augmente-la en grosse période d\'entraînement</div></span><span style="width:110px"><select id="portion">'+[0.8,1,1.2,1.4,1.6].map(function(p){return '<option value="'+p+'"'+(S.portion===p?' selected':'')+'>× '+String(p).replace(".",",")+'</option>'}).join("")+'</select></span></div></div>';return h}
 
-function viewCourses(){var month=S.scope==="month";var weeks=month?S.weeks:[S.weeks[S.week]];var q=aggregate(weeks);var key=month?"month":"w"+S.week;var ck=S.checked[key]||{};
+function scopeInfo(){var sc=S.scope||"2w";if(sc==="month")return{sc:sc,weeks:S.weeks,key:"month",lab:"du mois",title:"Courses du mois"};
+if(sc==="week")return{sc:sc,weeks:[S.weeks[S.week]],key:"w"+S.week,lab:"semaine du "+shortD(dateOf(S.week,0)),title:"Courses de la semaine"};
+var a=S.week>=2?2:0;return{sc:"2w",weeks:[S.weeks[a],S.weeks[a+1]],key:"b"+a,lab:"du "+shortD(dateOf(a,0))+" au "+shortD(addD(dateOf(a+1,0),6)),title:"Courses pour 2 semaines",a:a}}
+function viewCourses(){var SI=scopeInfo(),month=SI.sc==="month";var weeks=SI.weeks;var q=aggregate(weeks);var key=SI.key;var ck=S.checked[key]||{};
 var groups={},plac=[];Object.keys(q).forEach(function(id){if(ING[id].s){plac.push(id);return}var r=ING[id].r;(groups[r]=groups[r]||[]).push(id)});
 var order=["Prozis & AM Nutrition","Fruits & légumes","Boucherie & poisson","Frais","Boulangerie","Épicerie","Surgelés"];
 var total=costOf(q),nItems=Object.keys(q).length,nCk=Object.keys(q).filter(function(id){return ck[id]}).length;
-var h='<div class="wk"><button class="'+(!month?'on':'')+'" data-scope="week">Semaine '+(S.week+1)+'</button><button class="'+(month?'on':'')+'" data-scope="month">Mois (4 sem.)</button></div>';
-h+='<div class="card hero"><div class="lab">'+(month?'Courses du mois':'Courses de la semaine')+'</div><div class="big">≈ '+eur(total)+'</div><div class="sub">'+nCk+' / '+nItems+' articles dans le panier</div></div>';
+var h='<div class="wk"><button class="'+(SI.sc==="week"?'on':'')+'" data-scope="week">1 sem.</button><button class="'+(SI.sc==="2w"?'on':'')+'" data-scope="2w">2 semaines</button><button class="'+(month?'on':'')+'" data-scope="month">Mois</button></div>';
+if(SI.sc==="2w")h+='<div class="wk" style="margin-top:8px"><button class="'+(SI.a===0?'on':'')+'" data-blk="0">'+shortD(dateOf(0,0))+' → '+shortD(addD(dateOf(1,0),6))+'</button><button class="'+(SI.a===2?'on':'')+'" data-blk="2">'+shortD(dateOf(2,0))+' → '+shortD(addD(dateOf(3,0),6))+'</button></div>';
+h+='<div class="card hero"><div class="lab">'+SI.title+'</div><div class="big">≈ '+eur(total)+'</div><div class="sub">'+SI.lab+' · '+nCk+' / '+nItems+' articles dans le panier</div></div>';
+if(SI.sc==="2w")h+='<div class="note" style="margin-top:10px">Achète les produits frais fragiles (poisson, salade, avocat, champignons) pour la première semaine, et prends-les en surgelé ou rachète-les en milieu de période pour la seconde.</div>';
 order.forEach(function(r){var l=groups[r];if(!l)return;l.sort(function(a,b){return ING[a].n.localeCompare(ING[b].n)});
 h+='<h2>'+r+'</h2><div class="card">'+l.map(function(id){return itemRow(id,q[id],ck[id])}).join("")+'</div>'});
 if(plac.length){h+='<h2>Placard <span class="small mute" style="font-family:Montserrat">à vérifier</span></h2><div class="card">'+plac.map(function(id){return itemRow(id,q[id],ck[id])}).join("")+'</div>'}
@@ -381,6 +387,7 @@ var b=t.closest("button");if(!b)return;var ds=b.dataset;
 if(ds.tab){tab=ds.tab;try{history.replaceState(null,"","#"+tab)}catch(e){}render();window.scrollTo(0,0);return}
 if(ds.week!==undefined){S.week=+ds.week;save();rerender();return}
 if(ds.scope){S.scope=ds.scope;save();rerender();return}
+if(ds.blk!==undefined){S.week=+ds.blk;save();rerender();return}
 if(ds.filter){filter=ds.filter;rerender();return}
 if(ds.swap){GW=S.week;var p=ds.swap.split(".");var w=S.weeks[S.week];var cur=w.days[+p[0]][p[1]];var used=[cur];w.days.forEach(function(day){if(p[1]!=="m"){["d","s"].forEach(function(k){if(day[k])used.push(day[k])})}});w.days[+p[0]][p[1]]=pickFor(+p[0],p[1],used);save();rerender();return}
 if(ds.swapsn!==undefined){var w2=S.weeks[S.week];w2.snacks[+ds.swapsn]=pick(pool("snack"),w2.snacks);save();rerender();return}
@@ -397,16 +404,16 @@ if(act==="lowfat"){S.lowfat=S.lowfat===false;S.weeks=[];normalize();save();reren
 if(act==="tt"){S.tt=S.tt===false;S.weeks=[];normalize();save();rerender();toast(S.tt!==false?"Plannings refaits avec tes recettes TikTok ✓":"Plannings refaits");return}
 if(act==="grid"){showGrid=!showGrid;rerender();return}
 if(act==="prices"){showPrices=!showPrices;rerender();return}
-if(act==="uncheck"){S.checked[S.scope==="month"?"month":"w"+S.week]={};save();rerender();return}
+if(act==="uncheck"){S.checked[scopeInfo().key]={};save();rerender();return}
 if(act==="copy"){copyList();return}
 if(act==="sync"){var ba=budgetApp();if(ba){ba.item.amount=Math.round(monthCost()*1.15);ba.state.updatedAt=Date.now();try{localStorage.setItem(BKEY,JSON.stringify(ba.state))}catch(e){}toast("Budget mis à jour ✓")}return}
 if(act==="export"){var blob=new Blob([JSON.stringify(S,null,1)],{type:"application/json"});var a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="cuisine-sauvegarde-"+today()+".json";document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500);return}
 if(act==="reset"){if(!resetArm){resetArm=true;render();return}localStorage.removeItem(KEY);location.reload();return}});
-function copyList(){var month=S.scope==="month";var q=aggregate(month?S.weeks:[S.weeks[S.week]]);var by={};Object.keys(q).forEach(function(id){var r=ING[id].s?"Placard (à vérifier)":ING[id].r;(by[r]=by[r]||[]).push("- "+ING[id].n+" : "+fmtQty(id,q[id]))});
-var txt="Courses "+(month?"du mois":"semaine "+(S.week+1))+"\n";Object.keys(by).forEach(function(r){txt+="\n"+r+"\n"+by[r].join("\n")+"\n"});
+function copyList(){var SI=scopeInfo();var q=aggregate(SI.weeks);var by={};Object.keys(q).forEach(function(id){var r=ING[id].s?"Placard (à vérifier)":ING[id].r;(by[r]=by[r]||[]).push("- "+ING[id].n+" : "+fmtQty(id,q[id]))});
+var txt="Courses "+SI.lab+"\n";Object.keys(by).forEach(function(r){txt+="\n"+r+"\n"+by[r].join("\n")+"\n"});
 try{navigator.clipboard.writeText(txt).then(function(){toast("Liste copiée ✓")},function(){toast("Copie impossible")})}catch(e){toast("Copie impossible")}}
 root.addEventListener("change",function(ev){var t=ev.target;
-if(t.dataset.ck){var key=S.scope==="month"?"month":"w"+S.week;S.checked[key]=S.checked[key]||{};if(t.checked)S.checked[key][t.dataset.ck]=true;else delete S.checked[key][t.dataset.ck];save();rerender();return}
+if(t.dataset.ck){var key=scopeInfo().key;S.checked[key]=S.checked[key]||{};if(t.checked)S.checked[key][t.dataset.ck]=true;else delete S.checked[key][t.dataset.ck];save();rerender();return}
 if(t.id==="addavoid"&&t.value){S.avoid=(S.avoid||[]).concat([t.value]);S.weeks=[];normalize();save();rerender();toast("Ingrédient évité, plannings refaits ✓");return}
 if(t.id==="kg"){S.kg=num(t.value)||70;save();rerender();return}
 if(t.id==="longrun"){S.longRun=+t.value;save();rerender();return}
