@@ -253,6 +253,7 @@ if(!S.v3){S.v3=1;if(!S.avoid)S.avoid=["epinard","tofu","coriandre"];S.weeks=[]}
 if(!S.avoid){S.avoid=["epinard","tofu","coriandre"];S.weeks=[]}
 if(!S.v5){S.v5=1;["epinard","tofu","coriandre","brocoli","choufleur"].forEach(function(x){if(S.avoid.indexOf(x)<0)S.avoid.push(x)});S.weeks=[]}
 if(!S.kg)S.kg=70;if(!S.fixL)S.fixL=[2,3,4];
+if(!S.v6){S.v6=1;[0,1,5,6].forEach(function(i){S.grid[i].d=true});S.weeks=[]}
 if(!S.base)S.base=isoD(mondayOf(new Date()));(function(){var cm=isoD(mondayOf(new Date()));var moved=false;while(S.base<cm){S.weeks.shift();S.base=addD(S.base,7);if(S.week>0)S.week--;moved=true}if(moved)S.checked={}})();
 normalize();save();
 
