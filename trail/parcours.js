@@ -2,7 +2,7 @@
    (Monaco) ou depuis une gare de la ligne Monaco → Nice (descendre du train après le travail et rentrer en courant),
    qui colle à la distance et au D+ prévus : carte, profil, « Y aller » et export GPX (à importer dans l'appli Coros).
    Les itinéraires sont tracés sur les vrais sentiers par BRouter (OpenStreetMap, profil randonnée montagne) puis gardés
-   dans le téléphone. En secours : mes anciennes sorties Coros (parcours.json).
+   dans le téléphone. En secours : mes anciennes sorties Coros (parcours.enc.json, chiffré).
    Module indépendant du code de VictorTrail (qui peut être rechargé depuis /victorTrail/) : il se greffe sur la fiche séance. */
 (function () {
   'use strict';
@@ -88,7 +88,7 @@
   function pd(s) { var a = s.split('-').map(Number); return Date.UTC(a[0], a[1] - 1, a[2]); }
   function dfr(s) { var M = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.']; var d = new Date(pd(s)); return d.getUTCDate() + ' ' + M[d.getUTCMonth()]; }
   function hav(a, b) { var R = 6371000, r = Math.PI / 180, x = Math.sin((b[0] - a[0]) * r / 2), y = Math.sin((b[1] - a[1]) * r / 2); return 2 * R * Math.asin(Math.sqrt(x * x + Math.cos(a[0] * r) * Math.cos(b[0] * r) * y * y)); }
-  function plan() { try { return JSON.parse(document.getElementById('data').textContent).plan || []; } catch (e) { return []; } }
+  function plan() { try { return (window.VT_D && window.VT_D.plan) || []; } catch (e) { return []; } }
 
   /* ---------- tracés : BRouter (sentiers OSM) puis cache local ---------- */
   function cached(id) { if (ROUTE[id]) return ROUTE[id]; try { var j = localStorage.getItem(CK + id); if (j) return ROUTE[id] = JSON.parse(j); } catch (e) { } return null; }
@@ -128,7 +128,7 @@
   function refresh() { clearTimeout(rT); rT = setTimeout(function () { var b = document.querySelector('#shB .pc'); if (b && CUR) render(b, CUR.s, CUR.date); }, 150); }
   function loadMine() {
     if (MINE) return Promise.resolve(MINE);
-    if (!MINEP) MINEP = fetch('parcours.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (j) { MINE = j; return j; }).catch(function () { MINEP = null; return null; });
+    if (!MINEP) MINEP = (window.VT_OWNER && window.VT_dec ? fetch('parcours.enc.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (x) { return x ? window.VT_dec(x, 'o') : null; }) : Promise.resolve(null)).then(function (j) { MINE = j; return j; }).catch(function () { MINEP = null; return null; });
     return MINEP;
   }
 
