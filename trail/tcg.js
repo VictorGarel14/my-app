@@ -1,6 +1,6 @@
 /* Le Bestiaire de Victor : une carte TCG par semaine jusqu'à la Diagonale des Fous.
    Module indépendant du code de VictorTrail (qui peut être rechargé depuis /victorTrail/) :
-   il ajoute une entrée dans « Plus », l'écran #/plus/cartes et un bandeau sur « Aujourd'hui ».
+   il met la carte de la semaine en vedette dans l'onglet VIC'TORY, ajoute l'écran #/victory/cartes et un bandeau sur « Aujourd'hui ».
    Les cartes sont dans cartes/cards.json ; ce qui a été dévoilé est gardé dans le navigateur. */
 (function () {
   'use strict';
@@ -156,14 +156,14 @@
 
   /* ---------- écran classeur ---------- */
   function drawBinder(el) {
-    el.innerHTML = '<div id="tcg"><a class="back" href="#/plus">‹ Plus</a><div class="tcg-hd"><h1>Le Bestiaire</h1><p>Une carte par semaine jusqu\'à la Diagonale</p></div><p class="note">Chargement des cartes…</p></div>';
+    el.innerHTML = '<div id="tcg"><a class="back" href="#/victory">‹ VIC’TORY</a><div class="tcg-hd"><h1>Le Bestiaire</h1><p>Une carte par semaine jusqu\'à la Diagonale</p></div><p class="note">Chargement des cartes…</p></div>';
     load().then(function (D) {
       var root = document.getElementById('tcg'); if (!root) return;
       if (!D) { root.querySelector('.note').textContent = 'Cartes indisponibles (hors ligne).'; return; }
       var S = slots(D), R = revealed(), N = D.slots;
       var shown = S.filter(function (s) { return state(s, R) === 'shown'; }).length;
       var nxt = S.find(function (s) { return !s.open; });
-      var h = '<a class="back" href="#/plus">‹ Plus</a><div class="tcg-hd"><h1>Le Bestiaire</h1><p>' + esc(D.serie) + '</p><p class="tcg-sig">« Continuer à rêver, juste assez pour tenir debout »</p></div>' +
+      var h = '<a class="back" href="#/victory">‹ VIC’TORY</a><div class="tcg-hd"><h1>Le Bestiaire</h1><p>' + esc(D.serie) + '</p><p class="tcg-sig">« Continuer à rêver, juste assez pour tenir debout »</p></div>' +
         '<div class="tcg-prog"><div class="t"><i style="width:' + (shown / N * 100).toFixed(1) + '%"></i></div><b>' + shown + ' / ' + N + '</b></div>' +
         '<p class="note" style="margin:-8px 0 16px">' + (nxt ? 'Prochaine carte le ' + fmt(nxt.date) + ' à ' + nxt.date.getHours() + ' h. ' : 'Toutes les cartes sont sorties. ') + 'La dernière se dévoile le jour de la Diagonale.</p><div class="tcg-grid">';
       S.forEach(function (s) {
@@ -218,13 +218,23 @@
   }
 
   /* ---------- branchements sur l'appli ---------- */
-  function isBinder() { return /^#\/plus\/cartes/.test(location.hash || ''); }
+  function isBinder() { return /^#\/(victory|plus)\/cartes/.test(location.hash || ''); }
   function patchPlus() {
-    var el = document.getElementById('s-plus'); if (!el) return;
+    var el = document.getElementById('s-victory'); if (!el) return;
     if (isBinder()) { if (!document.getElementById('tcg')) drawBinder(el); return; }
+    // carte de la semaine en vedette en haut de l'onglet VIC'TORY
+    if (/^#\/victory\/?$/.test(location.hash || '') && !el.querySelector('.tcg-feat')) {
+      load().then(function (D) {
+        if (!D || el.querySelector('.tcg-feat')) return;
+        var S = slots(D), R = revealed(), open = S.filter(function (x) { var st = state(x, R); return st === 'new' || st === 'shown'; }), s = open.pop(); if (!s) return;
+        var st = state(s, R), a = document.createElement('a'); a.className = 'tcg-ban tcg-feat'; a.href = '#/victory/cartes';
+        a.innerHTML = '<div class="mini">' + flipHTML(s, st, D.slots, st === 'shown').replace('<div class="tap">Touche pour dévoiler</div>', '') + '</div><div><b>' + (st === 'new' ? 'Nouvelle carte !' : 'Le Bestiaire') + '</b><small>' + (st === 'new' ? 'La carte ' + s.n + ' t\'attend : touche pour la dévoiler' : 'Carte ' + s.n + ' · ' + esc(s.card.title) + ' · ' + (open.length + 1) + '/' + D.slots) + '</small></div><span class="go">›</span>';
+        var hd = el.querySelector(':scope > .hd'); if (hd) hd.after(a); else el.insertBefore(a, el.firstChild);
+      });
+    }
     var menu = el.querySelector('nav.menu');
-    if (menu && !menu.querySelector('[href="#/plus/cartes"]')) {
-      var a = document.createElement('a'); a.href = '#/plus/cartes';
+    if (menu && !menu.querySelector('[href="#/victory/cartes"]')) {
+      var a = document.createElement('a'); a.href = '#/victory/cartes';
       a.innerHTML = '<div><span>Le Bestiaire</span><small>Ma carte TCG de la semaine, jusqu\'à la Diagonale</small></div>';
       menu.insertBefore(a, menu.firstChild);
     }
@@ -235,7 +245,7 @@
       if (!D || el.querySelector('.tcg-ban')) return;
       var S = slots(D), R = revealed();
       var s = S.filter(function (x) { return state(x, R) === 'new'; }).pop(); if (!s) return;
-      var a = document.createElement('a'); a.className = 'tcg-ban'; a.href = '#/plus/cartes';
+      var a = document.createElement('a'); a.className = 'tcg-ban'; a.href = '#/victory/cartes';
       a.innerHTML = '<div class="mini">' + flipHTML(s, 'new', D.slots, false).replace('<div class="tap">Touche pour dévoiler</div>', '') + '</div><div><b>Nouvelle carte !</b><small>La carte ' + s.n + ' du Bestiaire t\'attend</small></div><span class="go" aria-hidden="true">›</span>';
       var hd = el.querySelector(':scope > .hd');
       if (hd) hd.after(a); else el.insertBefore(a, el.firstChild);
@@ -247,7 +257,7 @@
     fn();
   }
   function init() {
-    watch('s-plus', patchPlus);
+    watch('s-victory', patchPlus);
     watch('s-aujourdhui', patchToday);
     window.addEventListener('hashchange', function () { setTimeout(patchPlus, 0); });
   }
