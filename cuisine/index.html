@@ -209,7 +209,7 @@ html.embed{--ink:#1a1033;--tx:#1a1033;--bd:#1a1033;--sh:#1a1033;--fld:#ffffff;--
 .embed .fab{bottom:calc(16px + env(safe-area-inset-bottom));border:3px solid var(--ink);box-shadow:3px 3px 0 var(--ink)}
 .embed .vt-sig{color:var(--violet);margin-bottom:24px}
 .embed .toast{border:3px solid var(--ink)}
-</style></head><body><div id="root"></div><script src="data.js"></script><script src="steps.js"></script><script>(function(){
+</style></head><body><div id="root"></div><script src="data.js"></script><script src="steps.js"></script><script src="healthy.js"></script><script>(function(){
 var ING=window.ING,RECIPES=window.RECIPES,RB={};RECIPES.forEach(function(r){RB[r.id]=r});
 var KEY="vg-cuisine-v1",BKEY="vg-budget-v1",CORE=/[?&]core\b/.test(location.search);
 var DAYS=["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
@@ -232,6 +232,12 @@ var EQUIP=[["cuisson","Cuisson",[["plaque","Plaques de cuisson"],["four","Four"]
 ["prep","Préparation",[["mixeur","Mixeur plongeant"],["blender","Blender"],["shaker","Shaker électrique"],["robot","Robot / hachoir"],["batteur","Batteur / robot pâtissier"],["mandoline","Mandoline"],["balance","Balance de cuisine"]]],
 ["divers","Petit-déj & conservation",[["grillepain","Grille-pain"],["bouilloire","Bouilloire"],["cafetiere","Cafetière / machine à café"],["congelateur","Congélateur"],["sousvide","Machine sous vide"]]]];
 var DEFEQ=["plaque","four","microondes","cookeo","shaker","mandoline","grillepain","bouilloire","congelateur","mixeur"];
+function tplCopy(){var w=JSON.parse(JSON.stringify({days:S.tpl.days,snacks:S.tpl.snacks}));w.days.forEach(function(day,d){SLOTS.forEach(function(sl){if(!S.grid[d][sl[0]])day[sl[0]]=null})});return w}
+// Conservation au frigo après l'achat (jours), et produits qu'on peut congeler
+var SHELF_R={"Épicerie":180,"Surgelés":90,"Prozis & AM Nutrition":180,"Boulangerie":3,"Frais":10,"Boucherie & poisson":2,"Fruits & légumes":7};
+var SHELF={oeuf:28,skyr:20,fblanc:15,lait:60,feta:30,mozza:7,parmesan:60,cottage:10,mascarpone:10,tofu:20,saumonf:10,poulet:3,dinde:3,boeuf:2,saumon:2,salade:5,avocat:5,champi:4,tomate:7,courgette:7,poivron:10,carotte:21,oignon:30,ail:60,pdt:30,pdouce:21,butternut:60,citron:21,banane:6,pomme:21,kiwi:14,concombre:7,chou:14,coriandre:5,brocoli:5,choufleur:7};
+var FREEZE={poulet:1,dinde:1,boeuf:1,saumon:1,pain:1,banane:1};
+function shelf(id){return SHELF[id]||SHELF_R[ING[id].r]||30}
 function hasEq(id){return (S.equip||DEFEQ).indexOf(id)>=0}
 function eqName(id){var n=id;EQUIP.forEach(function(g){g[2].forEach(function(e){if(e[0]===id)n=e[1]})});return n}
 function needsMix(r){return (r.u||[]).some(function(x){return /mixeur|blender/i.test(x)&&!/shaker/i.test(x)})}
@@ -379,7 +385,7 @@ if(big&&slot==="m")return "avant";if((big||t.type==="qualite")&&slot!=="m")retur
 var lr=S.longRun;if(lr<0)return null;var prev=(lr+6)%7;
 if(d===lr&&slot==="m")return "avant";if(d===prev&&slot==="s")return "avant";if(d===lr&&(slot==="d"||slot==="s"))return "recup";return null}
 function pickFor(d,slot,used){var type=slot==="m"?"pdj":"plat";var tag=slotWant(d,slot);var l=tag?pool(type,tag):[];if(!l.length)l=pool(type);return pick(l,used)}
-function genWeek(wi){GW=wi==null?S.weeks.length:wi;var w={days:[],snacks:[]};var used=[],lastPdj=[];
+function genWeek(wi,free){if(!free&&S.tpl&&S.tplAuto)return tplCopy();GW=wi==null?S.weeks.length:wi;var w={days:[],snacks:[]};var used=[],lastPdj=[];
 for(var d=0;d<7;d++){var day={};SLOTS.forEach(function(sl){var k=sl[0];if(!S.grid[d][k]){day[k]=null;return}
 var id=pickFor(d,k,k==="m"?lastPdj:used);day[k]=id;if(k==="m")lastPdj=[id];else used.push(id)});w.days.push(day)}
 var sn=pool("snack");for(var i=0;i<S.snacks;i++){var x=pick(sn,w.snacks.length<sn.length?w.snacks:[]);if(x)w.snacks.push(x)}
@@ -534,7 +540,7 @@ avoid:function(id){S.avoid=(S.avoid||[]).concat([id]);S.weeks=[];normalize();sav
 unavoid:function(id){S.avoid=(S.avoid||[]).filter(function(x){return x!==id});S.weeks=[];normalize();save();return "Plannings refaits ✓"},
 fav:function(id){var i=S.fav.indexOf(id);if(i>=0)S.fav.splice(i,1);else S.fav.push(id);save()},
 excl:function(id){var j=S.excl.indexOf(id);var m;if(j>=0)S.excl.splice(j,1);else{S.excl.push(id);m="Elle ne sera plus proposée"}save();return m},
-regen:function(){S.weeks[S.week]=genWeek(S.week);save();return "Nouvelle semaine générée"},
+regen:function(){S.weeks[S.week]=genWeek(S.week,true);normalize();save();return "Nouvelle semaine générée"},
 lowfat:function(){S.lowfat=S.lowfat===false;S.weeks=[];normalize();save();return S.lowfat!==false?"Plannings refaits, version légère ✓":"Plannings refaits"},
 tt:function(){S.tt=S.tt===false;S.weeks=[];normalize();save();return S.tt!==false?"Plannings refaits avec tes recettes TikTok ✓":"Plannings refaits"},
 uncheck:function(){S.checked[scopeInfo().key]={};save()},
@@ -550,6 +556,10 @@ setsn:function(i,id){if(!RB[id])return;S.weeks[S.week].snacks[i]=id;save();retur
 addCustom:function(o){var id="c_"+Date.now().toString(36);S.custom[id]={n:String(o.n).slice(0,120),k:num(o.k),P:num(o.P),G:num(o.G),L:num(o.L),items:o.items||null};RB[id]=mkCustom(id,S.custom[id]);save();return id},
 addProduct:function(o){var id="o_"+String(o.code||Date.now().toString(36)).replace(/[^0-9a-z]/gi,"").slice(0,20);S.custom[id]={n:String(o.n).slice(0,120),por:String(o.por||"").slice(0,40),c:"off",k:num(o.k),P:num(o.P),G:num(o.G),L:num(o.L),at:Date.now()};RB[id]=mkCustom(id,S.custom[id]);save();return id},
 equip:function(id){if(!S.equip)S.equip=DEFEQ.slice();var i=S.equip.indexOf(id);if(i>=0)S.equip.splice(i,1);else S.equip.push(id);normalize();save();return (i>=0?eqName(id)+" retiré":eqName(id)+" ajouté")+", recettes adaptées ✓"},
+saveTpl:function(wi){var w=S.weeks[wi==null?S.week:wi];S.tpl={days:JSON.parse(JSON.stringify(w.days)),snacks:w.snacks.slice(),at:Date.now(),from:dateOf(wi==null?S.week:wi,0)};save();return "Semaine type enregistrée ✓"},
+applyTpl:function(wi){if(!S.tpl)return;S.weeks[wi]=tplCopy();normalize();save();return "Semaine type appliquée ✓"},
+tplAuto:function(){S.tplAuto=!S.tplAuto;save();return S.tplAuto?"Les nouvelles semaines partiront de ta semaine type":"Les nouvelles semaines seront variées"},
+delTpl:function(){S.tpl=null;S.tplAuto=false;save();return "Semaine type supprimée"},
 delCustom:function(id){if(!S.custom[id])return;delete S.custom[id];delete RB[id];normalize();save();return "Retiré de ma liste"},
 sync:function(){var ba=budgetApp();if(!ba)return;ba.item.amount=Math.round(monthCost()*1.15);ba.state.updatedAt=Date.now();try{localStorage.setItem(BKEY,JSON.stringify(ba.state))}catch(e){}return "Budget mis à jour ✓"}};
 function listText(){var SI=scopeInfo();var q=aggregate(SI.weeks);var by={};Object.keys(q).forEach(function(id){var r=ING[id].s?"Placard (à vérifier)":ING[id].r;(by[r]=by[r]||[]).push("- "+ING[id].n+" : "+fmtQty(id,q[id]))});
@@ -615,7 +625,7 @@ if(t.id==="imp"){var f=t.files&&t.files[0];if(!f)return;var rd=new FileReader();
 root.addEventListener("input",function(ev){if(ev.target.id==="q"){query=ev.target.value;var pos=ev.target.selectionStart;render();var q=document.getElementById("q");if(q){q.focus();try{q.setSelectionRange(pos,pos)}catch(e){}}}});
 // Mode « moteur » : l'onglet Nutrition de VictorTrail charge cette page cachée et l'affiche à sa façon
 if(CORE){render=function(){try{CUI.onChange&&CUI.onChange()}catch(e){}};toast=function(m){try{CUI.onToast&&CUI.onToast(m)}catch(e){}};
-window.CUI={get S(){return S},RB:RB,ING:ING,RECIPES:RECIPES,DAYS:DAYS,SLOTS:SLOTS,TAGS:TAGS,DT:DT,NEED:NEED,CREATORS:window.CREATORS,OPS:OPS,PRODS:PRODS,CATS:CATS,EQUIP:EQUIP,hasEq:hasEq,eqMiss:eqMiss,eqName:eqName,
+window.CUI={get S(){return S},RB:RB,ING:ING,RECIPES:RECIPES,DAYS:DAYS,SLOTS:SLOTS,TAGS:TAGS,DT:DT,NEED:NEED,CREATORS:window.CREATORS,OPS:OPS,PRODS:PRODS,CATS:CATS,EQUIP:EQUIP,hasEq:hasEq,shelf:shelf,FREEZE:FREEZE,eqMiss:eqMiss,eqName:eqName,
 dateOf:dateOf,shortD:shortD,addD:addD,isoD:isoD,dayTrain:dayTrain,dayFactor:dayFactor,dayNeed:dayNeed,dayGot:dayGot,fuel:fuel,aggregate:aggregate,costOf:costOf,weekCost:weekCost,monthCost:monthCost,weekMeals:weekMeals,fmtQty:fmtQty,ingCost:ingCost,recCost:recCost,price:price,scopeInfo:scopeInfo,budgetVal:budgetVal,budgetApp:budgetApp,hasAvoid:hasAvoid,listText:listText,batchPlan:batchPlan,recipePlan:recipePlan,applyTrain:applyTrain,
 get METH(){return METH},setMeth:function(m){METH=m;try{localStorage.setItem("vg-cuisine-meth",m)}catch(e){}},get synced(){return !!TP},onChange:null,onToast:null};
 try{parent.postMessage({cui:"ready"},location.origin)}catch(e){}}
