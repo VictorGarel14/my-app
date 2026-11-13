@@ -226,6 +226,10 @@ var root=document.getElementById("root");
 function defGrid(){var g=[];for(var i=0;i<7;i++)g.push(i<5?{m:true,d:false,s:true}:{m:true,d:true,s:true});return g}
 var S=null;try{S=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){}
 if(!S||!S.grid)S={grid:defGrid(),longRun:6,portion:1,snacks:5,budget:"",weeks:[],week:0,scope:"week",checked:{},priceOv:{},fav:[],excl:[]};
+// Produits tout prêts et ajouts perso (« ce que j'ai vraiment mangé ») : comptés dans les apports, pas dans les courses ni dans les portions du jour
+var PRODS=[{id:"x_hipro_vc",n:"HiPRO vanille cookie (pot 300 g, 25 g prot.)",k:180,P:25,G:16.5,L:1.5}];
+function mkCustom(id,o){return{id:id,t:"ext",n:o.n,k:+o.k||0,P:+o.P||0,G:+o.G||0,L:+o.L||0,m:0,tags:[],i:[],s:[],fx:true,cu:true,own:id.charAt(0)==="c"}}
+S.custom=S.custom||{};PRODS.forEach(function(o){RB[o.id]=mkCustom(o.id,o)});Object.keys(S.custom).forEach(function(id){RB[id]=mkCustom(id,S.custom[id])});
 var tab=(location.hash||"").slice(1);if(["semaine","courses","recettes","budget"].indexOf(tab)<0)tab="semaine";
 var METH=(function(){try{return localStorage.getItem("vg-cuisine-meth")||"cookeo"}catch(e){return "cookeo"}})(),STEPDONE={},TIMER=null,sheet=null,settings=false,resetArm=false,showGrid=false,showPrices=false,filter="tous",query="";
 var fmt=new Intl.NumberFormat("fr-FR",{style:"currency",currency:"EUR",maximumFractionDigits:0});
@@ -257,7 +261,7 @@ function dayFactor(date){var t=dayTrain(date);return S.portion*(t?DT[t.type][2]:
 // Besoins quotidiens (g/kg de poids) selon la séance du jour : repères de nutrition du sport d'endurance
 var NEED={charge:[10,1.5,0.8],repos:[4,1.6,1],leger:[5,1.7,1],salle:[4.5,2,1],moyen:[6,1.8,1],qualite:[7,1.8,1],longue:[9,2,1.2],course:[10,2,1.2]};
 function dayNeed(date){var t=dayTrain(date),ty=t?t.type:"moyen",n=NEED[ty],kg=num(S.kg)||70;var G=n[0]*kg,P=n[1]*kg,L=(S.lowfat!==false?0.8:n[2])*kg;return{k:4*G+4*P+9*L,G:G,P:P,L:L,type:ty}}
-function dayGot(day,date,d){var f=dayFactor(date),o={k:0,G:0,P:0,L:0};var e=RB.ext_salade;if(e&&S.fixL.indexOf(d)>=0){o.k+=e.k;o.G+=e.G;o.P+=e.P;o.L+=e.L}SLOTS.forEach(function(sl){var r=RB[day[sl[0]]];if(r){o.k+=r.k*f;o.G+=r.G*f;o.P+=r.P*f;o.L+=r.L*f}});return o}
+function dayGot(day,date,d){var f=dayFactor(date),o={k:0,G:0,P:0,L:0};var e=RB.ext_salade;if(e&&S.fixL.indexOf(d)>=0){o.k+=e.k;o.G+=e.G;o.P+=e.P;o.L+=e.L}SLOTS.forEach(function(sl){var r=RB[day[sl[0]]];if(r){var ff=r.fx?1:f;o.k+=r.k*ff;o.G+=r.G*ff;o.P+=r.P*ff;o.L+=r.L*ff}});return o}
 function fuel(tr){if(!tr||tr.type==="charge")return null;var mx=0;tr.l.forEach(function(x){if(x.c!=="gym"&&num(x.m)>mx)mx=num(x.m)});if(mx<90)return null;var h=mx/60,c=mx>=150?(mx>=240?80:70):60;return{h:h,carb:Math.round(h*c),ch:c,water:Math.round(h*550/100)/10,fl:Math.ceil(h*550/500),gels:Math.round(h*c/25),na:Math.round(h*500)}}
 function fuelHtml(f){return '<div class="fuel"><div class="nh"><b>⚡ Pendant l\'effort</b><span>'+String(Math.round(f.h*10)/10).replace(".",",")+' h</span></div><div class="fk"><div><b>'+f.carb+' g</b><span>glucides ('+f.ch+' g/h)</span></div><div><b>'+f.gels+'</b><span>gels TA ou équiv.</span></div><div><b>'+f.fl+'</b><span>flasques 500 ml</span></div><div><b>'+String(f.water).replace(".",",")+' L</b><span>eau · '+f.na+' mg sodium</span></div></div><div class="nn">Commence à manger dès 30-45 min, puis toutes les 20-30 min. Teste ces quantités à l\'entraînement.</div></div>'}
 function nutriHtml(day,date,d){var n=dayNeed(date),g=dayGot(day,date,d);var rows=[["Calories","k","kcal","#ff2a93"],["Glucides","G","g","#ffb020"],["Protéines","P","g","#8b2fd9"],["Lipides","L","g","#13a874"]];
@@ -384,7 +388,7 @@ return '<div class="sheet-bg" data-act="closebg"><div class="sheet" role="dialog
 '<div class="macros"><div><b>'+Math.round(r.k*f)+'</b><span>kcal</span></div><div><b>'+Math.round(r.P*f)+' g</b><span>protéines</span></div><div><b>'+Math.round(r.G*f)+' g</b><span>glucides</span></div><div><b>'+Math.round(r.L*f)+' g</b><span>lipides</span></div></div>'+
 '<div class="small mute" style="margin:8px 0">'+r.m+' min · '+fmt2.format(recCost(r,f))+' la portion'+(f!==1?' (portion × '+String(f).replace(".",",")+')':'')+'</div>'+(r.src?'<a class="srcl" href="'+esc(r.src.url)+'" target="_blank" rel="noopener">♪ Inspiré de '+esc(r.src.by)+' sur TikTok ›</a>':'')+'<div class="tags" style="margin-bottom:6px">'+r.tags.map(function(t){return '<span>'+TAGS[t]+'</span>'}).join("")+'</div>'+
 (r.desc?'<p style="margin:10px 0 0">'+esc(r.desc)+'</p>':'')+'<h2 style="margin-top:12px">Ingrédients</h2><div>'+r.i.map(function(x){var ig=ING[x[0]],q=x[1]*f;var qs=ig.u==="pc"?(Math.round(q*100)/100).toString().replace(".",",")+(q>1?" ":" ")+"pièce"+(q>1?"s":""):Math.round(q)+" "+ig.u;return '<div class="row"><span>'+esc(ig.n)+'</span><span class="v">'+qs+'</span></div>'}).join("")+'</div>'+
-(function(){var P=recipePlan(r,METH);var h=(r.ck?'<div class="meth"><button class="'+(!P.ck?'on':'')+'" data-meth="classic">🍳 Classique</button><button class="'+(P.ck?'on':'')+'" data-meth="cookeo">🍲 Au Cookeo</button></div><div class="small mute" style="margin:6px 2px 0">'+(P.part?'Au Cookeo : le riz cuit dans le Cookeo pendant que tu fais le reste.':'Deux façons de faire la même recette : choisis-en une.')+'</div>':'')+utenHtml(r,P.U);if(!P.ck)return h+stepsHtml(r,P.steps);if(!P.part)return h+cookeoCard(P.cookeo,P.prep);return h+cookeoCard(P.cookeo,'')+stepsHtml(r,P.steps)})()+(r.ov?ovenCard(r.ov):'')+(r.sk?'<div class="eq"><b>🥤 Au shaker électrique</b>'+esc(r.sk)+'</div>':'')+(hasAvoid(r)?'<div class="eq warn"><b>⚠️ Contient un ingrédient que tu évites</b>Elle ne sera pas proposée dans tes plannings.</div>':'')+
+(function(){var P=recipePlan(r,METH);var h=(r.ck?'<div class="meth"><button class="'+(!P.ck?'on':'')+'" data-meth="classic">🍳 Classique</button><button class="'+(P.ck?'on':'')+'" data-meth="cookeo">🍲 Au Cookeo</button></div><div class="small mute" style="margin:6px 2px 0">'+(P.part?'Au Cookeo : le riz cuit dans le Cookeo pendant que tu fais le reste.':'Deux façons de faire la même recette : choisis-en une.')+'</div>':'')+utenHtml(r,P.U);if(!P.ck)return h+(P.steps?stepsHtml(r,P.steps):"");if(!P.part)return h+cookeoCard(P.cookeo,P.prep);return h+cookeoCard(P.cookeo,'')+stepsHtml(r,P.steps)})()+(r.ov?ovenCard(r.ov):'')+(r.sk?'<div class="eq"><b>🥤 Au shaker électrique</b>'+esc(r.sk)+'</div>':'')+(hasAvoid(r)?'<div class="eq warn"><b>⚠️ Contient un ingrédient que tu évites</b>Elle ne sera pas proposée dans tes plannings.</div>':'')+
 '<div style="display:flex;gap:8px;margin-top:14px"><button class="btn" style="flex:1'+(fav?';background:var(--pink);color:#fff':'')+'" data-fav="'+id+'">'+(fav?'♥ Favori':'♡ Favori')+'</button><button class="btn" style="flex:1" data-excl="'+id+'">'+(ex?'Reproposer':'Ne plus proposer')+'</button></div></div></div>'}
 function batchHtml(){var P=batchPlan();
 var h='<div class="sheet-bg" data-act="closebg"><div class="sheet" style="max-height:88vh;overflow:auto"><h3><span>Batch cooking du dimanche</span><button class="btn ghost" data-act="close" style="font-size:20px">✕</button></h3>';
@@ -433,6 +437,10 @@ portion:function(v){S.portion=num(v);save()},
 snacks:function(v){S.snacks=Math.max(0,Math.min(14,Math.round(num(v))));normalize();save()},
 budget:function(v){S.budget=v===""?"":num(v);save()},
 price:function(id,v){S.priceOv[id]=v===""?null:num(v);save()},
+set:function(d,k,id){if(!RB[id])return;S.weeks[S.week].days[d][k]=id;save();return "Repas changé ✓"},
+setsn:function(i,id){if(!RB[id])return;S.weeks[S.week].snacks[i]=id;save();return "Collation changée ✓"},
+addCustom:function(o){var id="c_"+Date.now().toString(36);S.custom[id]={n:String(o.n).slice(0,80),k:num(o.k),P:num(o.P),G:num(o.G),L:num(o.L)};RB[id]=mkCustom(id,S.custom[id]);save();return id},
+delCustom:function(id){if(!S.custom[id])return;delete S.custom[id];delete RB[id];normalize();save();return "Retiré de ma liste"},
 sync:function(){var ba=budgetApp();if(!ba)return;ba.item.amount=Math.round(monthCost()*1.15);ba.state.updatedAt=Date.now();try{localStorage.setItem(BKEY,JSON.stringify(ba.state))}catch(e){}return "Budget mis à jour ✓"}};
 function listText(){var SI=scopeInfo();var q=aggregate(SI.weeks);var by={};Object.keys(q).forEach(function(id){var r=ING[id].s?"Placard (à vérifier)":ING[id].r;(by[r]=by[r]||[]).push("- "+ING[id].n+" : "+fmtQty(id,q[id]))});
 var txt="Courses "+SI.lab+"\n";Object.keys(by).forEach(function(r){txt+="\n"+r+"\n"+by[r].join("\n")+"\n"});return txt}
@@ -446,7 +454,7 @@ st.push("Laisse refroidir 20-30 min, répartis dans les boîtes, étiquette avec
 return{n:n,items:top.map(function(id){return{id:id,cnt:cnt[id],how:RB[id].ck?"cookeo":RB[id].ov?"four":"plaque"}}),steps:st}}
 // Méthode d'une recette : classique, tout au Cookeo, ou riz au Cookeo pendant le reste
 function recipePlan(r,meth){var ck=!!(r.ck&&meth==="cookeo"),part=ck&&/^Riz/.test(r.ckprep||"");var vap=ck&&r.ck.some(function(x){return x[0]==="Vapeur"});var U=r.u||[];if(ck&&!part)U=["Cookeo Touch"].concat(U.filter(function(x){return !/casserole|po[eê]le|sauteuse|cocotte|wok|cuit-vapeur|bouilloire/i.test(x)}));else if(ck)U=["Cookeo Touch"].concat(U.filter(function(x){return !/^casserole$/i.test(x)&&!(vap&&/vapeur/i.test(x))}));
-return{ck:ck,part:part,U:U,cookeo:ck?r.ck:null,prep:ck&&!part?r.ckprep:"",steps:!ck?r.s:part?r.s.filter(function(x){return !/^Riz :/.test(x)&&!(vap&&/vapeur/i.test(x))}):null}}
+return{ck:ck,part:part,U:U,cookeo:ck?r.ck:null,prep:ck&&!part?r.ckprep:"",steps:!ck?(r.s&&r.s.length?r.s:null):part?r.s.filter(function(x){return !/^Riz :/.test(x)&&!(vap&&/vapeur/i.test(x))}):null}}
 function rerender(){var y=window.scrollY;render();window.scrollTo(0,y)}
 
 root.addEventListener("click",function(ev){var t=ev.target;
@@ -497,7 +505,7 @@ if(t.id==="imp"){var f=t.files&&t.files[0];if(!f)return;var rd=new FileReader();
 root.addEventListener("input",function(ev){if(ev.target.id==="q"){query=ev.target.value;var pos=ev.target.selectionStart;render();var q=document.getElementById("q");if(q){q.focus();try{q.setSelectionRange(pos,pos)}catch(e){}}}});
 // Mode « moteur » : l'onglet Nutrition de VictorTrail charge cette page cachée et l'affiche à sa façon
 if(CORE){render=function(){try{CUI.onChange&&CUI.onChange()}catch(e){}};toast=function(m){try{CUI.onToast&&CUI.onToast(m)}catch(e){}};
-window.CUI={get S(){return S},RB:RB,ING:ING,RECIPES:RECIPES,DAYS:DAYS,SLOTS:SLOTS,TAGS:TAGS,DT:DT,NEED:NEED,CREATORS:window.CREATORS,OPS:OPS,
+window.CUI={get S(){return S},RB:RB,ING:ING,RECIPES:RECIPES,DAYS:DAYS,SLOTS:SLOTS,TAGS:TAGS,DT:DT,NEED:NEED,CREATORS:window.CREATORS,OPS:OPS,PRODS:PRODS,
 dateOf:dateOf,shortD:shortD,addD:addD,isoD:isoD,dayTrain:dayTrain,dayFactor:dayFactor,dayNeed:dayNeed,dayGot:dayGot,fuel:fuel,aggregate:aggregate,costOf:costOf,weekCost:weekCost,monthCost:monthCost,weekMeals:weekMeals,fmtQty:fmtQty,ingCost:ingCost,recCost:recCost,price:price,scopeInfo:scopeInfo,budgetVal:budgetVal,budgetApp:budgetApp,hasAvoid:hasAvoid,listText:listText,batchPlan:batchPlan,recipePlan:recipePlan,applyTrain:applyTrain,
 get METH(){return METH},setMeth:function(m){METH=m;try{localStorage.setItem("vg-cuisine-meth",m)}catch(e){}},get synced(){return !!TP},onChange:null,onToast:null};
 try{parent.postMessage({cui:"ready"},location.origin)}catch(e){}}
