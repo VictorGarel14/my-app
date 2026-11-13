@@ -227,8 +227,90 @@ function defGrid(){var g=[];for(var i=0;i<7;i++)g.push(i<5?{m:true,d:false,s:tru
 var S=null;try{S=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){}
 if(!S||!S.grid)S={grid:defGrid(),longRun:6,portion:1,snacks:5,budget:"",weeks:[],week:0,scope:"week",checked:{},priceOv:{},fav:[],excl:[]};
 // Produits tout prêts et ajouts perso (« ce que j'ai vraiment mangé ») : comptés dans les apports, pas dans les courses ni dans les portions du jour
-var PRODS=[{id:"x_hipro_vc",n:"HiPRO vanille cookie (pot 300 g, 25 g prot.)",k:180,P:25,G:16.5,L:1.5}];
-function mkCustom(id,o){return{id:id,t:"ext",n:o.n,k:+o.k||0,P:+o.P||0,G:+o.G||0,L:+o.L||0,m:0,tags:[],i:[],s:[],fx:true,cu:true,own:id.charAt(0)==="c"}}
+var CATS=[["pdj","Petit-déj"],["prot","Viandes, poissons, œufs"],["fec","Féculents"],["leg","Légumes & fruits"],["lait","Laitiers & fromages"],["snk","Collations"],["eff","Effort & récup"],["out","Resto & à emporter"],["bois","Boissons"]];
+// Produits courants, valeurs indicatives par portion (tables Ciqual et étiquettes courantes)
+var PRODS=[
+["x_hipro_vc","pdj","HiPRO vanille cookie","pot 300 g",180,25,16.5,1.5],
+["x_fb0","pdj","Fromage blanc 0 %","200 g",92,15,8,0.4],
+["x_skyr","pdj","Skyr nature","150 g",95,16,6,0.3],
+["x_avoine","pdj","Flocons d'avoine","50 g",185,6.8,29,3.5],
+["x_muesli","pdj","Muesli","50 g",185,4.5,31,3],
+["x_painc","pdj","Pain complet","2 tranches · 60 g",145,5.4,26,1.5],
+["x_baguette","pdj","Baguette","1/4 · 60 g",160,5.4,33,0.7],
+["x_miel","pdj","Miel","1 c. à soupe · 20 g",64,0,16,0],
+["x_confi","pdj","Confiture","1 c. à soupe · 20 g",50,0,12,0],
+["x_pb","pdj","Beurre de cacahuète","1 c. à soupe · 15 g",95,4,2,7.5],
+["x_lait","pdj","Lait demi-écrémé","1 bol · 250 ml",115,8,12,4],
+["x_whey","pdj","Whey","1 dose · 30 g",115,24,2,1.5],
+["x_jus","pdj","Jus d'orange","1 verre · 200 ml",90,1.4,19,0.2],
+["x_oeufs2","pdj","Œufs","2 œufs",145,12.6,0.8,10],
+["x_pancakes","pdj","Pancakes protéinés","3 pancakes",300,22,38,6],
+["x_hachee5","prot","Viande hachée 5 %","1 steak · 125 g",165,26,0,6.3],
+["x_hachee15","prot","Viande hachée 15 %","1 steak · 125 g",270,23,0,19.4],
+["x_boeuf","prot","Steak de bœuf","150 g",225,39,0,7.5],
+["x_poulet","prot","Escalope de poulet","150 g",165,34.5,0,2.3],
+["x_dinde","prot","Escalope de dinde","150 g",160,33,0,2.5],
+["x_cabillaud","prot","Cabillaud","150 g",125,27,0,1],
+["x_saumon","prot","Saumon","1 pavé · 125 g",250,25,0,16],
+["x_thon","prot","Thon au naturel","1 boîte · 100 g",115,26,0,1],
+["x_crevettes","prot","Crevettes","150 g",135,30,0,1.5],
+["x_jambon","prot","Jambon blanc","2 tranches · 80 g",90,16,1,2.5],
+["x_oeufs","prot","Œufs","2 œufs",145,12.6,0.8,10],
+["x_tofu","prot","Tofu","150 g",180,19,3,11],
+["x_lentilles","prot","Lentilles cuites","200 g",230,18,34,1],
+["x_riz","fec","Riz basmati cuit","200 g",260,5.4,56,0.6],
+["x_pates","fec","Pâtes cuites","200 g",300,10.6,60,1.8],
+["x_patesc","fec","Pâtes complètes cuites","200 g",280,11,53,2],
+["x_quinoa","fec","Quinoa cuit","180 g",215,8,38,3.4],
+["x_semoule","fec","Semoule cuite","200 g",220,7.6,46,0.4],
+["x_pdt","fec","Pommes de terre","250 g",200,5,42.5,0.3],
+["x_patdouce","fec","Patate douce","200 g",170,3.2,40,0.2],
+["x_wrap","fec","Wrap / tortilla","1 galette · 60 g",180,5,30,4],
+["x_gnocchi","fec","Gnocchis","200 g",300,7,64,1],
+["x_legverts","leg","Légumes verts cuits","200 g",60,3,8,0.5],
+["x_haricots","leg","Haricots verts","200 g",60,4,8,0.4],
+["x_brocoli","leg","Brocoli","200 g",70,6,6,0.8],
+["x_courgette","leg","Courgettes","200 g",35,2.5,4,0.6],
+["x_ratatouille","leg","Ratatouille","200 g",120,2,12,7],
+["x_salade","leg","Salade verte + vinaigrette","1 bol",130,1.5,3,11.3],
+["x_avocat","leg","Avocat","1/2 · 75 g",120,1.5,1.5,11],
+["x_banane","leg","Banane","1 fruit",105,1.3,24,0.3],
+["x_pomme","leg","Pomme","1 fruit",80,0.4,18,0.3],
+["x_fruitsr","leg","Fruits rouges","150 g",60,1.2,10,0.5],
+["x_compote","leg","Compote sans sucre ajouté","1 gourde · 100 g",55,0.3,12,0.2],
+["x_fb3","lait","Fromage blanc 3 %","200 g",150,15,8,6.4],
+["x_yaourt","lait","Yaourt nature","1 pot · 125 g",75,5.3,6.9,1.9],
+["x_mozza","lait","Mozzarella","1/2 boule · 60 g",150,11,1,11],
+["x_emmental","lait","Emmental râpé","20 g",76,5.6,0,5.8],
+["x_parmesan","lait","Parmesan","15 g",60,5.4,0,4.2],
+["x_feta","lait","Feta","40 g",105,6,0.5,8.5],
+["x_riz_lait","lait","Riz au lait","1 pot · 125 g",150,4,25,3.5],
+["x_barrep","snk","Barre protéinée","1 barre · 60 g",220,20,20,7],
+["x_barrec","snk","Barre de céréales","1 barre · 25 g",100,1.5,17,3],
+["x_amandes","snk","Amandes","1 poignée · 30 g",180,6.3,2.6,15.6],
+["x_noix","snk","Noix","1 poignée · 30 g",200,4.5,2,19.5],
+["x_dattes","snk","Dattes","4 dattes · 40 g",115,1,27,0.2],
+["x_chocnoir","snk","Chocolat noir 70 %","2 carreaux · 20 g",115,1.6,6.5,8.4],
+["x_cookie","snk","Cookie","1 cookie · 20 g",100,1,13,5],
+["x_galette","snk","Galettes de riz","3 galettes",105,2.4,23,0.8],
+["x_gel","eff","Gel énergétique","1 gel",100,0,25,0],
+["x_iso","eff","Boisson d'effort","1 flasque · 500 ml",160,0,40,0],
+["x_patefruit","eff","Pâte de fruits","30 g",90,0,22,0],
+["x_barreeff","eff","Barre d'effort","1 barre · 40 g",150,2,30,2.5],
+["x_recup","eff","Boisson de récup","500 ml",300,20,50,2],
+["x_sandwich","out","Sandwich jambon-beurre","1 sandwich",450,20,50,18],
+["x_pizza","out","Pizza margherita","1/2 pizza",500,21,60,18],
+["x_burger","out","Burger","1 burger",550,28,45,28],
+["x_sushis","out","Sushis / makis","8 pièces",350,15,60,5],
+["x_poke","out","Poke bowl saumon","1 bol",600,30,70,20],
+["x_platjour","out","Plat du jour au resto","1 assiette",750,35,70,35],
+["x_kebab","out","Kebab","1 sandwich",700,32,70,30],
+["x_biere","bois","Bière","33 cl",140,1,12,0],
+["x_vin","bois","Vin","1 verre · 12,5 cl",85,0,3,0],
+["x_soda","bois","Soda sucré","33 cl",140,0,35,0],
+["x_cafelait","bois","Café au lait","1 tasse",60,4,6,2]
+].map(function(a){return{id:a[0],c:a[1],n:a[2],por:a[3],k:a[4],P:a[5],G:a[6],L:a[7]}});
+function mkCustom(id,o){return{id:id,t:"ext",n:o.n,por:o.por||"",c:o.c||"",k:+o.k||0,P:+o.P||0,G:+o.G||0,L:+o.L||0,m:0,tags:[],i:[],s:[],fx:true,cu:true,own:id.charAt(0)==="c",items:o.items||null}}
 S.custom=S.custom||{};PRODS.forEach(function(o){RB[o.id]=mkCustom(o.id,o)});Object.keys(S.custom).forEach(function(id){RB[id]=mkCustom(id,S.custom[id])});
 var tab=(location.hash||"").slice(1);if(["semaine","courses","recettes","budget"].indexOf(tab)<0)tab="semaine";
 var METH=(function(){try{return localStorage.getItem("vg-cuisine-meth")||"cookeo"}catch(e){return "cookeo"}})(),STEPDONE={},TIMER=null,sheet=null,settings=false,resetArm=false,showGrid=false,showPrices=false,filter="tous",query="";
@@ -439,7 +521,7 @@ budget:function(v){S.budget=v===""?"":num(v);save()},
 price:function(id,v){S.priceOv[id]=v===""?null:num(v);save()},
 set:function(d,k,id){if(!RB[id])return;S.weeks[S.week].days[d][k]=id;save();return "Repas changé ✓"},
 setsn:function(i,id){if(!RB[id])return;S.weeks[S.week].snacks[i]=id;save();return "Collation changée ✓"},
-addCustom:function(o){var id="c_"+Date.now().toString(36);S.custom[id]={n:String(o.n).slice(0,80),k:num(o.k),P:num(o.P),G:num(o.G),L:num(o.L)};RB[id]=mkCustom(id,S.custom[id]);save();return id},
+addCustom:function(o){var id="c_"+Date.now().toString(36);S.custom[id]={n:String(o.n).slice(0,120),k:num(o.k),P:num(o.P),G:num(o.G),L:num(o.L),items:o.items||null};RB[id]=mkCustom(id,S.custom[id]);save();return id},
 delCustom:function(id){if(!S.custom[id])return;delete S.custom[id];delete RB[id];normalize();save();return "Retiré de ma liste"},
 sync:function(){var ba=budgetApp();if(!ba)return;ba.item.amount=Math.round(monthCost()*1.15);ba.state.updatedAt=Date.now();try{localStorage.setItem(BKEY,JSON.stringify(ba.state))}catch(e){}return "Budget mis à jour ✓"}};
 function listText(){var SI=scopeInfo();var q=aggregate(SI.weeks);var by={};Object.keys(q).forEach(function(id){var r=ING[id].s?"Placard (à vérifier)":ING[id].r;(by[r]=by[r]||[]).push("- "+ING[id].n+" : "+fmtQty(id,q[id]))});
@@ -505,7 +587,7 @@ if(t.id==="imp"){var f=t.files&&t.files[0];if(!f)return;var rd=new FileReader();
 root.addEventListener("input",function(ev){if(ev.target.id==="q"){query=ev.target.value;var pos=ev.target.selectionStart;render();var q=document.getElementById("q");if(q){q.focus();try{q.setSelectionRange(pos,pos)}catch(e){}}}});
 // Mode « moteur » : l'onglet Nutrition de VictorTrail charge cette page cachée et l'affiche à sa façon
 if(CORE){render=function(){try{CUI.onChange&&CUI.onChange()}catch(e){}};toast=function(m){try{CUI.onToast&&CUI.onToast(m)}catch(e){}};
-window.CUI={get S(){return S},RB:RB,ING:ING,RECIPES:RECIPES,DAYS:DAYS,SLOTS:SLOTS,TAGS:TAGS,DT:DT,NEED:NEED,CREATORS:window.CREATORS,OPS:OPS,PRODS:PRODS,
+window.CUI={get S(){return S},RB:RB,ING:ING,RECIPES:RECIPES,DAYS:DAYS,SLOTS:SLOTS,TAGS:TAGS,DT:DT,NEED:NEED,CREATORS:window.CREATORS,OPS:OPS,PRODS:PRODS,CATS:CATS,
 dateOf:dateOf,shortD:shortD,addD:addD,isoD:isoD,dayTrain:dayTrain,dayFactor:dayFactor,dayNeed:dayNeed,dayGot:dayGot,fuel:fuel,aggregate:aggregate,costOf:costOf,weekCost:weekCost,monthCost:monthCost,weekMeals:weekMeals,fmtQty:fmtQty,ingCost:ingCost,recCost:recCost,price:price,scopeInfo:scopeInfo,budgetVal:budgetVal,budgetApp:budgetApp,hasAvoid:hasAvoid,listText:listText,batchPlan:batchPlan,recipePlan:recipePlan,applyTrain:applyTrain,
 get METH(){return METH},setMeth:function(m){METH=m;try{localStorage.setItem("vg-cuisine-meth",m)}catch(e){}},get synced(){return !!TP},onChange:null,onToast:null};
 try{parent.postMessage({cui:"ready"},location.origin)}catch(e){}}
