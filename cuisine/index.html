@@ -227,6 +227,32 @@ function defGrid(){var g=[];for(var i=0;i<7;i++)g.push(i<5?{m:true,d:false,s:tru
 var S=null;try{S=JSON.parse(localStorage.getItem(KEY)||"null")}catch(e){}
 if(!S||!S.grid)S={grid:defGrid(),longRun:6,portion:1,snacks:5,budget:"",weeks:[],week:0,scope:"week",checked:{},priceOv:{},fav:[],excl:[]};
 // Produits tout prêts et ajouts perso (« ce que j'ai vraiment mangé ») : comptés dans les apports, pas dans les courses ni dans les portions du jour
+// Mon équipement : les recettes et les méthodes s'adaptent à ce que j'ai dans ma cuisine
+var EQUIP=[["cuisson","Cuisson",[["plaque","Plaques de cuisson"],["four","Four"],["airfryer","Airfryer"],["microondes","Micro-ondes"],["cookeo","Cookeo / multicuiseur"],["thermomix","Thermomix / robot cuiseur"],["vapeur","Cuiseur vapeur"],["rizcuiseur","Cuiseur à riz"],["plancha","Plancha / grill"],["croque","Appareil à croque / panini"]]],
+["prep","Préparation",[["mixeur","Mixeur plongeant"],["blender","Blender"],["shaker","Shaker électrique"],["robot","Robot / hachoir"],["batteur","Batteur / robot pâtissier"],["mandoline","Mandoline"],["balance","Balance de cuisine"]]],
+["divers","Petit-déj & conservation",[["grillepain","Grille-pain"],["bouilloire","Bouilloire"],["cafetiere","Cafetière / machine à café"],["congelateur","Congélateur"],["sousvide","Machine sous vide"]]]];
+var DEFEQ=["plaque","four","microondes","cookeo","shaker","mandoline","grillepain","bouilloire","congelateur","mixeur"];
+function hasEq(id){return (S.equip||DEFEQ).indexOf(id)>=0}
+function eqName(id){var n=id;EQUIP.forEach(function(g){g[2].forEach(function(e){if(e[0]===id)n=e[1]})});return n}
+function needsMix(r){return (r.u||[]).some(function(x){return /mixeur|blender/i.test(x)&&!/shaker/i.test(x)})}
+// Ce qui manque vraiment pour faire la recette (sans solution de rechange)
+function eqMiss(r){var m=[];if(r.ov&&!hasEq("four")&&!hasEq("airfryer"))m.push("four");if(needsMix(r)&&!hasEq("mixeur")&&!hasEq("blender")&&!hasEq("thermomix"))m.push("mixeur");return m}
+function airfry(ov){var t=Math.max(140,Math.round((ov.t-20)/5)*5);var mn=String(ov.min).replace(/\d+/g,function(x){return Math.max(1,Math.round(+x*0.8))});return{t:t,min:mn}}
+// Adaptations à mon équipement : ustensiles remplacés et conseils
+function eqAdapt(r,U){var notes=[],miss=eqMiss(r).map(eqName);U=(U||[]).map(function(x){
+if(/^mandoline$/i.test(x)&&!hasEq("mandoline"))return "Couteau (tranches fines)";
+if(/grille-pain/i.test(x)&&!hasEq("grillepain"))return "Poêle sèche (à la place du grille-pain)";
+if(/bouilloire/i.test(x)&&!hasEq("bouilloire"))return "Casserole (pour chauffer l'eau)";
+if(/shaker électrique/i.test(x)&&!hasEq("shaker"))return hasEq("blender")?"Blender":hasEq("mixeur")?"Mixeur plongeant":"Shaker manuel ou bocal fermé";
+if(/mixeur|blender/i.test(x)&&!/shaker/i.test(x)){return hasEq("blender")&&!hasEq("mixeur")?"Blender":hasEq("mixeur")?x:hasEq("thermomix")?"Thermomix (vitesse 8-10)":x}
+if(/plaque du four/i.test(x)&&!hasEq("four")&&hasEq("airfryer"))return "Panier de l'Airfryer";
+return x});
+if(r.ov&&!hasEq("four")&&hasEq("airfryer")){var a=airfry(r.ov);notes.push("Pas de four : à l'Airfryer à "+a.t+" °C, environ "+a.min+" min (20 °C et 20 % de temps en moins). Fais-le en 2 fournées si le panier est plein.")}
+if(r.sk&&!hasEq("shaker"))notes.push(hasEq("blender")||hasEq("mixeur")?"Pas de shaker électrique : mixe 20 secondes au "+(hasEq("blender")?"blender":"mixeur")+".":"Pas de shaker électrique : secoue fort 30 secondes dans un shaker manuel ou un bocal fermé.");
+if(r.ck&&!hasEq("cookeo")&&hasEq("thermomix"))notes.push("Version Cookeo masquée : au Thermomix, suis la méthode classique en cuisant en mode Varoma ou mijotage.");
+if(hasEq("rizcuiseur")&&(r.i||[]).some(function(x){return /^riz/.test(x[0])}))notes.push("Le riz peut cuire au cuiseur à riz pendant que tu prépares le reste.");
+if(hasEq("vapeur")&&(r.s||[]).some(function(x){return /vapeur/i.test(x)}))notes.push("Cuisson vapeur : utilise ton cuiseur vapeur.");
+return{U:U,notes:notes,miss:miss}}
 var CATS=[["pdj","Petit-déj"],["prot","Viandes, poissons, œufs"],["fec","Féculents"],["leg","Légumes & fruits"],["lait","Laitiers & fromages"],["snk","Collations"],["eff","Effort & récup"],["out","Resto & à emporter"],["bois","Boissons"]];
 // Produits courants, valeurs indicatives par portion (tables Ciqual et étiquettes courantes)
 var PRODS=[
@@ -325,7 +351,7 @@ function today(){var t=new Date();t.setMinutes(t.getMinutes()-t.getTimezoneOffse
 
 // ---------- génération ----------
 function hasAvoid(r){var a=S.avoid||[];return r.i.some(function(x){return a.indexOf(x[0])>=0})}
-function pool(type,tag){return RECIPES.filter(function(r){return r.t===type&&S.excl.indexOf(r.id)<0&&!hasAvoid(r)&&(!tag||r.tags.indexOf(tag)>=0)})}
+function pool(type,tag){return RECIPES.filter(function(r){return r.t===type&&S.excl.indexOf(r.id)<0&&!hasAvoid(r)&&!eqMiss(r).length&&(!tag||r.tags.indexOf(tag)>=0)})}
 function pick(list,avoid){var c=list.filter(function(r){return avoid.indexOf(r.id)<0});if(!c.length)c=list;if(!c.length)return null;if(S.lowfat!==false){var lf=c.filter(function(r){return r.L*9/r.k<=0.22});if(lf.length>=2)c=lf;else{lf=c.filter(function(r){return r.L*9/r.k<=0.3});if(lf.length>=2)c=lf}}if(S.tt!==false){var cc=c.filter(function(r){return r.src||r.pro});if(cc.length>=2)c=cc}
 var w=[];c.forEach(function(r){var n=1;if(r.pro)n+=3;if(S.lowfat!==false){var sh=r.L*9/r.k;n=sh<0.2?4:sh<0.25?2:1}if(r.src&&S.tt!==false)n=6;if(S.fav.indexOf(r.id)>=0)n+=2;for(var k=0;k<n;k++)w.push(r)});return w[Math.floor(Math.random()*w.length)].id}
 var TP=null,GW=0,RACES=[];try{TP=JSON.parse(localStorage.getItem("vg-cuisine-train")||"null")}catch(e){}try{RACES=JSON.parse(localStorage.getItem("vg-cuisine-races")||"[]")}catch(e){}
@@ -360,7 +386,7 @@ var sn=pool("snack");for(var i=0;i<S.snacks;i++){var x=pick(sn,w.snacks.length<s
 return w}
 function normalize(){while(S.weeks.length<4)S.weeks.push(genWeek(S.weeks.length));
 S.weeks.forEach(function(w,wi){GW=wi;var used=[];w.days.forEach(function(day){["d","s"].forEach(function(k){if(day[k])used.push(day[k])})});
-w.days.forEach(function(day,d){SLOTS.forEach(function(sl){var k=sl[0];if(!S.grid[d][k])day[k]=null;else if(!day[k]||!RB[day[k]]||hasAvoid(RB[day[k]])||S.excl.indexOf(day[k])>=0){day[k]=pickFor(d,k,used);used.push(day[k])}})});
+w.days.forEach(function(day,d){SLOTS.forEach(function(sl){var k=sl[0];if(!S.grid[d][k])day[k]=null;else if(!day[k]||!RB[day[k]]||hasAvoid(RB[day[k]])||eqMiss(RB[day[k]]).length||S.excl.indexOf(day[k])>=0){day[k]=pickFor(d,k,used);used.push(day[k])}})});
 w.snacks=w.snacks.filter(function(x){return RB[x]&&!hasAvoid(RB[x])});var sn=pool("snack");while(w.snacks.length<S.snacks&&sn.length)w.snacks.push(pick(sn,w.snacks));w.snacks=w.snacks.slice(0,Math.max(0,S.snacks))})}
 if(!S.ttMig){S.ttMig=1;S.weeks=[]}
 if(!S.v4){S.v4=1;S.weeks=[]}
@@ -470,7 +496,7 @@ return '<div class="sheet-bg" data-act="closebg"><div class="sheet" role="dialog
 '<div class="macros"><div><b>'+Math.round(r.k*f)+'</b><span>kcal</span></div><div><b>'+Math.round(r.P*f)+' g</b><span>protéines</span></div><div><b>'+Math.round(r.G*f)+' g</b><span>glucides</span></div><div><b>'+Math.round(r.L*f)+' g</b><span>lipides</span></div></div>'+
 '<div class="small mute" style="margin:8px 0">'+r.m+' min · '+fmt2.format(recCost(r,f))+' la portion'+(f!==1?' (portion × '+String(f).replace(".",",")+')':'')+'</div>'+(r.src?'<a class="srcl" href="'+esc(r.src.url)+'" target="_blank" rel="noopener">♪ Inspiré de '+esc(r.src.by)+' sur TikTok ›</a>':'')+'<div class="tags" style="margin-bottom:6px">'+r.tags.map(function(t){return '<span>'+TAGS[t]+'</span>'}).join("")+'</div>'+
 (r.desc?'<p style="margin:10px 0 0">'+esc(r.desc)+'</p>':'')+'<h2 style="margin-top:12px">Ingrédients</h2><div>'+r.i.map(function(x){var ig=ING[x[0]],q=x[1]*f;var qs=ig.u==="pc"?(Math.round(q*100)/100).toString().replace(".",",")+(q>1?" ":" ")+"pièce"+(q>1?"s":""):Math.round(q)+" "+ig.u;return '<div class="row"><span>'+esc(ig.n)+'</span><span class="v">'+qs+'</span></div>'}).join("")+'</div>'+
-(function(){var P=recipePlan(r,METH);var h=(r.ck?'<div class="meth"><button class="'+(!P.ck?'on':'')+'" data-meth="classic">🍳 Classique</button><button class="'+(P.ck?'on':'')+'" data-meth="cookeo">🍲 Au Cookeo</button></div><div class="small mute" style="margin:6px 2px 0">'+(P.part?'Au Cookeo : le riz cuit dans le Cookeo pendant que tu fais le reste.':'Deux façons de faire la même recette : choisis-en une.')+'</div>':'')+utenHtml(r,P.U);if(!P.ck)return h+(P.steps?stepsHtml(r,P.steps):"");if(!P.part)return h+cookeoCard(P.cookeo,P.prep);return h+cookeoCard(P.cookeo,'')+stepsHtml(r,P.steps)})()+(r.ov?ovenCard(r.ov):'')+(r.sk?'<div class="eq"><b>🥤 Au shaker électrique</b>'+esc(r.sk)+'</div>':'')+(hasAvoid(r)?'<div class="eq warn"><b>⚠️ Contient un ingrédient que tu évites</b>Elle ne sera pas proposée dans tes plannings.</div>':'')+
+(function(){var P=recipePlan(r,METH);var h=(P.canCk?'<div class="meth"><button class="'+(!P.ck?'on':'')+'" data-meth="classic">🍳 Classique</button><button class="'+(P.ck?'on':'')+'" data-meth="cookeo">🍲 Au Cookeo</button></div><div class="small mute" style="margin:6px 2px 0">'+(P.part?'Au Cookeo : le riz cuit dans le Cookeo pendant que tu fais le reste.':'Deux façons de faire la même recette : choisis-en une.')+'</div>':'')+utenHtml(r,P.U)+(P.miss.length?'<div class="eq warn"><b>Il te manque : '+esc(P.miss.join(', '))+'</b>Elle n\'est pas proposée dans tes plannings.</div>':'')+(P.notes.length?'<div class="eq"><b>Adapté à ton équipement</b>'+P.notes.map(esc).join('<br>')+'</div>':'');if(!P.ck)return h+(P.steps?stepsHtml(r,P.steps):"");if(!P.part)return h+cookeoCard(P.cookeo,P.prep);return h+cookeoCard(P.cookeo,'')+stepsHtml(r,P.steps)})()+(r.ov?ovenCard(r.ov):'')+(r.sk?'<div class="eq"><b>🥤 Au shaker électrique</b>'+esc(r.sk)+'</div>':'')+(hasAvoid(r)?'<div class="eq warn"><b>⚠️ Contient un ingrédient que tu évites</b>Elle ne sera pas proposée dans tes plannings.</div>':'')+
 '<div style="display:flex;gap:8px;margin-top:14px"><button class="btn" style="flex:1'+(fav?';background:var(--pink);color:#fff':'')+'" data-fav="'+id+'">'+(fav?'♥ Favori':'♡ Favori')+'</button><button class="btn" style="flex:1" data-excl="'+id+'">'+(ex?'Reproposer':'Ne plus proposer')+'</button></div></div></div>'}
 function batchHtml(){var P=batchPlan();
 var h='<div class="sheet-bg" data-act="closebg"><div class="sheet" style="max-height:88vh;overflow:auto"><h3><span>Batch cooking du dimanche</span><button class="btn ghost" data-act="close" style="font-size:20px">✕</button></h3>';
@@ -523,6 +549,7 @@ set:function(d,k,id){if(!RB[id])return;S.weeks[S.week].days[d][k]=id;save();retu
 setsn:function(i,id){if(!RB[id])return;S.weeks[S.week].snacks[i]=id;save();return "Collation changée ✓"},
 addCustom:function(o){var id="c_"+Date.now().toString(36);S.custom[id]={n:String(o.n).slice(0,120),k:num(o.k),P:num(o.P),G:num(o.G),L:num(o.L),items:o.items||null};RB[id]=mkCustom(id,S.custom[id]);save();return id},
 addProduct:function(o){var id="o_"+String(o.code||Date.now().toString(36)).replace(/[^0-9a-z]/gi,"").slice(0,20);S.custom[id]={n:String(o.n).slice(0,120),por:String(o.por||"").slice(0,40),c:"off",k:num(o.k),P:num(o.P),G:num(o.G),L:num(o.L),at:Date.now()};RB[id]=mkCustom(id,S.custom[id]);save();return id},
+equip:function(id){if(!S.equip)S.equip=DEFEQ.slice();var i=S.equip.indexOf(id);if(i>=0)S.equip.splice(i,1);else S.equip.push(id);normalize();save();return (i>=0?eqName(id)+" retiré":eqName(id)+" ajouté")+", recettes adaptées ✓"},
 delCustom:function(id){if(!S.custom[id])return;delete S.custom[id];delete RB[id];normalize();save();return "Retiré de ma liste"},
 sync:function(){var ba=budgetApp();if(!ba)return;ba.item.amount=Math.round(monthCost()*1.15);ba.state.updatedAt=Date.now();try{localStorage.setItem(BKEY,JSON.stringify(ba.state))}catch(e){}return "Budget mis à jour ✓"}};
 function listText(){var SI=scopeInfo();var q=aggregate(SI.weeks);var by={};Object.keys(q).forEach(function(id){var r=ING[id].s?"Placard (à vérifier)":ING[id].r;(by[r]=by[r]||[]).push("- "+ING[id].n+" : "+fmtQty(id,q[id]))});
@@ -536,8 +563,8 @@ var pl=top.filter(function(id){return !RB[id].ck&&!RB[id].ov});if(pl.length)st.p
 st.push("Laisse refroidir 20-30 min, répartis dans les boîtes, étiquette avec le jour.","Frigo pour lundi à mercredi, congélateur pour jeudi et vendredi (sors-les la veille au soir).");
 return{n:n,items:top.map(function(id){return{id:id,cnt:cnt[id],how:RB[id].ck?"cookeo":RB[id].ov?"four":"plaque"}}),steps:st}}
 // Méthode d'une recette : classique, tout au Cookeo, ou riz au Cookeo pendant le reste
-function recipePlan(r,meth){var ck=!!(r.ck&&meth==="cookeo"),part=ck&&/^Riz/.test(r.ckprep||"");var vap=ck&&r.ck.some(function(x){return x[0]==="Vapeur"});var U=r.u||[];if(ck&&!part)U=["Cookeo Touch"].concat(U.filter(function(x){return !/casserole|po[eê]le|sauteuse|cocotte|wok|cuit-vapeur|bouilloire/i.test(x)}));else if(ck)U=["Cookeo Touch"].concat(U.filter(function(x){return !/^casserole$/i.test(x)&&!(vap&&/vapeur/i.test(x))}));
-return{ck:ck,part:part,U:U,cookeo:ck?r.ck:null,prep:ck&&!part?r.ckprep:"",steps:!ck?(r.s&&r.s.length?r.s:null):part?r.s.filter(function(x){return !/^Riz :/.test(x)&&!(vap&&/vapeur/i.test(x))}):null}}
+function recipePlan(r,meth){var ck=!!(r.ck&&meth==="cookeo"&&hasEq("cookeo")),part=ck&&/^Riz/.test(r.ckprep||"");var vap=ck&&r.ck.some(function(x){return x[0]==="Vapeur"});var U=r.u||[];if(ck&&!part)U=["Cookeo Touch"].concat(U.filter(function(x){return !/casserole|po[eê]le|sauteuse|cocotte|wok|cuit-vapeur|bouilloire/i.test(x)}));else if(ck)U=["Cookeo Touch"].concat(U.filter(function(x){return !/^casserole$/i.test(x)&&!(vap&&/vapeur/i.test(x))}));
+var EA=eqAdapt(r,U);U=EA.U;return{ck:ck,canCk:!!(r.ck&&hasEq("cookeo")),notes:EA.notes,miss:EA.miss,airfry:r.ov&&!hasEq("four")&&hasEq("airfryer")?airfry(r.ov):null,part:part,U:U,cookeo:ck?r.ck:null,prep:ck&&!part?r.ckprep:"",steps:!ck?(r.s&&r.s.length?r.s:null):part?r.s.filter(function(x){return !/^Riz :/.test(x)&&!(vap&&/vapeur/i.test(x))}):null}}
 function rerender(){var y=window.scrollY;render();window.scrollTo(0,y)}
 
 root.addEventListener("click",function(ev){var t=ev.target;
@@ -588,7 +615,7 @@ if(t.id==="imp"){var f=t.files&&t.files[0];if(!f)return;var rd=new FileReader();
 root.addEventListener("input",function(ev){if(ev.target.id==="q"){query=ev.target.value;var pos=ev.target.selectionStart;render();var q=document.getElementById("q");if(q){q.focus();try{q.setSelectionRange(pos,pos)}catch(e){}}}});
 // Mode « moteur » : l'onglet Nutrition de VictorTrail charge cette page cachée et l'affiche à sa façon
 if(CORE){render=function(){try{CUI.onChange&&CUI.onChange()}catch(e){}};toast=function(m){try{CUI.onToast&&CUI.onToast(m)}catch(e){}};
-window.CUI={get S(){return S},RB:RB,ING:ING,RECIPES:RECIPES,DAYS:DAYS,SLOTS:SLOTS,TAGS:TAGS,DT:DT,NEED:NEED,CREATORS:window.CREATORS,OPS:OPS,PRODS:PRODS,CATS:CATS,
+window.CUI={get S(){return S},RB:RB,ING:ING,RECIPES:RECIPES,DAYS:DAYS,SLOTS:SLOTS,TAGS:TAGS,DT:DT,NEED:NEED,CREATORS:window.CREATORS,OPS:OPS,PRODS:PRODS,CATS:CATS,EQUIP:EQUIP,hasEq:hasEq,eqMiss:eqMiss,eqName:eqName,
 dateOf:dateOf,shortD:shortD,addD:addD,isoD:isoD,dayTrain:dayTrain,dayFactor:dayFactor,dayNeed:dayNeed,dayGot:dayGot,fuel:fuel,aggregate:aggregate,costOf:costOf,weekCost:weekCost,monthCost:monthCost,weekMeals:weekMeals,fmtQty:fmtQty,ingCost:ingCost,recCost:recCost,price:price,scopeInfo:scopeInfo,budgetVal:budgetVal,budgetApp:budgetApp,hasAvoid:hasAvoid,listText:listText,batchPlan:batchPlan,recipePlan:recipePlan,applyTrain:applyTrain,
 get METH(){return METH},setMeth:function(m){METH=m;try{localStorage.setItem("vg-cuisine-meth",m)}catch(e){}},get synced(){return !!TP},onChange:null,onToast:null};
 try{parent.postMessage({cui:"ready"},location.origin)}catch(e){}}
