@@ -1,5 +1,5 @@
 // Réseau d'abord (pour toujours avoir la dernière version), cache si pas de réseau.
-const CACHE = "cuisine-v30";
+const CACHE = "cuisine-v31";
 const SHELL = ["./", "index.html", "manifest.webmanifest", "icons/icon-192.png", "icons/apple-touch-icon.png", "data.js", "steps.js", "healthy.js"];
 self.addEventListener("install", e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(SHELL)).catch(()=>{})); self.skipWaiting(); });
 self.addEventListener("activate", e => {

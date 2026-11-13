@@ -223,10 +223,10 @@ window.CREATORS=[["@soufiane.haloui","Repas high protein"],["@flavietaste","Dess
 (function(){var T={ap_mealprep:"Mixe soja, lait de coco et beurre de cacahuète au shaker : sauce lisse en 10 secondes.",smoothie:"Mets lait, skyr, banane et fruits rouges dans le shaker électrique : 20 secondes et c'est lisse.",overnight:"Mixe le lait et le skyr au shaker avant de verser sur l'avoine : texture plus crémeuse.",ap_oats:"Mélange le skyr avec ta protéine chocolat au shaker : pas de grumeaux.",sh_pommes:"Si tu utilises de la protéine en poudre, mixe-la au shaker avec un peu de lait avant de l'ajouter au yaourt.",sh_bouchees:"Fais la pâte (avoine, œuf, lait, fromage blanc) directement au shaker électrique.",pancakes:"Mixe œufs, banane et avoine au shaker électrique : pâte prête en 30 secondes."};window.RECIPES.forEach(function(r){if(T[r.id])r.sk=T[r.id]})})();
 
 // Repas pris à l'extérieur (pas dans la liste de courses) : salade du midi les jours de bureau
-window.RECIPES.push({id:"ext_salade",t:"ext",n:"Salade du midi + dessert (achetés)",m:0,k:740,P:49,G:85,L:20,tags:[],
- i:[["riz",50],["tomate",80],["chou",60],["poulet",100],["oignon",20],["fblanc",150],["avoine",20],["miel",10]],
- desc:"Salade : riz basmati, tomates, chou rouge, poulet épicé et poulet nature, oignon rouge, vinaigrette miel-moutarde. Ici Salad. Dessert : fromage blanc, flocons d'avoine et miel. Pour moins de lipides : sauce à part, n'en mets que la moitié (environ 5 g de lipides en moins).",
- s:["Repas acheté : rien à cuisiner.","Valeurs estimées pour une salade composée d'environ 400 g (sans mozzarella ni croûtons) et un pot de fromage blanc de 150 g."]});
+window.RECIPES.push({id:"ext_salade",t:"ext",n:"Salade du midi (achetée)",m:0,k:560,P:35,G:59,L:18,tags:[],
+ i:[["riz",50],["tomate",80],["chou",60],["poulet",100],["oignon",20]],
+ desc:"Riz basmati, tomates, chou rouge, poulet épicé et poulet nature, oignon rouge, vinaigrette miel-moutarde. Ici Salad. Pour moins de lipides : sauce à part, n'en mets que la moitié (environ 5 g de lipides en moins).",
+ s:["Repas acheté : rien à cuisiner.","Valeurs estimées pour une salade composée d'environ 400 g, sans dessert."]});
 
 // Produits de Victor : Prozis (pancakes, sauces zéro) et AM Nutrition (whey). Prix et valeurs repris des fiches produit, à ajuster.
 Object.assign(window.ING,{
