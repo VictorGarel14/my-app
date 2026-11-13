@@ -522,6 +522,7 @@ price:function(id,v){S.priceOv[id]=v===""?null:num(v);save()},
 set:function(d,k,id){if(!RB[id])return;S.weeks[S.week].days[d][k]=id;save();return "Repas changé ✓"},
 setsn:function(i,id){if(!RB[id])return;S.weeks[S.week].snacks[i]=id;save();return "Collation changée ✓"},
 addCustom:function(o){var id="c_"+Date.now().toString(36);S.custom[id]={n:String(o.n).slice(0,120),k:num(o.k),P:num(o.P),G:num(o.G),L:num(o.L),items:o.items||null};RB[id]=mkCustom(id,S.custom[id]);save();return id},
+addProduct:function(o){var id="o_"+String(o.code||Date.now().toString(36)).replace(/[^0-9a-z]/gi,"").slice(0,20);S.custom[id]={n:String(o.n).slice(0,120),por:String(o.por||"").slice(0,40),c:"off",k:num(o.k),P:num(o.P),G:num(o.G),L:num(o.L),at:Date.now()};RB[id]=mkCustom(id,S.custom[id]);save();return id},
 delCustom:function(id){if(!S.custom[id])return;delete S.custom[id];delete RB[id];normalize();save();return "Retiré de ma liste"},
 sync:function(){var ba=budgetApp();if(!ba)return;ba.item.amount=Math.round(monthCost()*1.15);ba.state.updatedAt=Date.now();try{localStorage.setItem(BKEY,JSON.stringify(ba.state))}catch(e){}return "Budget mis à jour ✓"}};
 function listText(){var SI=scopeInfo();var q=aggregate(SI.weeks);var by={};Object.keys(q).forEach(function(id){var r=ING[id].s?"Placard (à vérifier)":ING[id].r;(by[r]=by[r]||[]).push("- "+ING[id].n+" : "+fmtQty(id,q[id]))});
