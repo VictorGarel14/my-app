@@ -118,7 +118,7 @@
     for (var n = 1; n <= N; n++) {
       var d;
       if (n === N) { d = pd(D.finale); d.setHours(8, 0, 0, 0); }
-      else { d = new Date(first); d.setDate(first.getDate() + 7 * (n - 1)); d.setHours(D.revealHour || 18, 0, 0, 0); }
+      else { d = new Date(first); d.setDate(first.getDate() + 7 * (n - 1)); d.setHours(D.revealHour != null ? D.revealHour : 8, 0, 0, 0); }
       out.push({ n: n, date: d, card: byN[n] || null, open: Date.now() >= d.getTime() });
     }
     return out;
