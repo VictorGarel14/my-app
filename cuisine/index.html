@@ -325,6 +325,23 @@ var PRODS=[
 ["x_chocnoir","snk","Chocolat noir 70 %","2 carreaux · 20 g",115,1.6,6.5,8.4],
 ["x_cookie","snk","Cookie","1 cookie · 20 g",100,1,13,5],
 ["x_galette","snk","Galettes de riz","3 galettes",105,2.4,23,0.8],
+["x_krisprolls","snk","Krisprolls","2 tranches · 22 g",88,2.4,15,1.5],
+["x_biscottes","snk","Biscottes","2 biscottes · 20 g",80,2.3,14,1.2],
+["x_speculoos_cr","snk","Crème de spéculoos","1 c. à soupe · 15 g",88,0.2,8.6,5.7],
+["x_nutella","snk","Pâte à tartiner chocolat-noisette","1 c. à soupe · 15 g",81,0.9,8.6,4.6],
+["x_speculoos","snk","Spéculoos","2 biscuits · 12 g",58,0.8,8.7,2.3],
+["x_madeleine","snk","Madeleine","1 madeleine · 25 g",110,1.5,14,5.5],
+["x_paindepices","snk","Pain d'épices","2 tranches · 40 g",140,1.5,30,0.8],
+["x_croissant","snk","Croissant","1 croissant",250,5,26,14],
+["x_painchoc","snk","Pain au chocolat","1 pain au chocolat",290,5,32,15],
+["x_crepe","snk","Crêpe sucrée","1 crêpe",150,4,22,5],
+["x_glace","snk","Glace","2 boules",200,3,25,10],
+["x_chips","snk","Chips","1 petit paquet · 30 g",160,2,15,10],
+["x_bonbons","snk","Bonbons","1 poignée · 30 g",100,1,24,0],
+["x_yaourtfruits","lait","Yaourt aux fruits","1 pot · 125 g",120,4,18,3],
+["x_orange","leg","Orange","1 fruit",70,1.3,15,0.2],
+["x_clementines","leg","Clémentines","2 fruits",70,1.2,16,0.2],
+["x_raisin","leg","Raisin","1 grappe · 150 g",105,1,24,0.3],
 ["x_gel","eff","Gel énergétique","1 gel",100,0,25,0],
 ["x_iso","eff","Boisson d'effort","1 flasque · 500 ml",160,0,40,0],
 ["x_patefruit","eff","Pâte de fruits","30 g",90,0,22,0],
@@ -375,7 +392,7 @@ function dayFactor(date){var t=dayTrain(date);return S.portion*(t?DT[t.type][2]:
 // Besoins quotidiens (g/kg de poids) selon la séance du jour : repères de nutrition du sport d'endurance
 var NEED={charge:[10,1.5,0.8],repos:[4,1.6,1],leger:[5,1.7,1],salle:[4.5,2,1],moyen:[6,1.8,1],qualite:[7,1.8,1],longue:[9,2,1.2],course:[10,2,1.2]};
 function dayNeed(date){var t=dayTrain(date),ty=t?t.type:"moyen",n=NEED[ty],kg=num(S.kg)||70;var G=n[0]*kg,P=n[1]*kg,L=(S.lowfat!==false?0.8:n[2])*kg;return{k:4*G+4*P+9*L,G:G,P:P,L:L,type:ty}}
-function dayGot(day,date,d){var f=dayFactor(date),o={k:0,G:0,P:0,L:0};var e=RB.ext_salade;if(e&&S.fixL.indexOf(d)>=0){o.k+=e.k;o.G+=e.G;o.P+=e.P;o.L+=e.L}SLOTS.forEach(function(sl){var r=RB[day[sl[0]]];if(r){var ff=r.fx?1:f;o.k+=r.k*ff;o.G+=r.G*ff;o.P+=r.P*ff;o.L+=r.L*ff}});return o}
+function dayGot(day,date,d){var f=dayFactor(date),o={k:0,G:0,P:0,L:0};var e=RB.ext_salade;if(e&&S.fixL.indexOf(d)>=0){o.k+=e.k;o.G+=e.G;o.P+=e.P;o.L+=e.L}SLOTS.forEach(function(sl){var r=RB[day[sl[0]]];if(r){var ff=r.fx?1:f;o.k+=r.k*ff;o.G+=r.G*ff;o.P+=r.P*ff;o.L+=r.L*ff}});((S.extra||{})[date]||[]).forEach(function(x){var r=RB[x[0]];if(r){o.k+=r.k*x[1];o.G+=r.G*x[1];o.P+=r.P*x[1];o.L+=r.L*x[1]}});return o}
 function fuel(tr){if(!tr||tr.type==="charge")return null;var mx=0;tr.l.forEach(function(x){if(x.c!=="gym"&&num(x.m)>mx)mx=num(x.m)});if(mx<90)return null;var h=mx/60,c=mx>=150?(mx>=240?80:70):60;return{h:h,carb:Math.round(h*c),ch:c,water:Math.round(h*550/100)/10,fl:Math.ceil(h*550/500),gels:Math.round(h*c/25),na:Math.round(h*500)}}
 function fuelHtml(f){return '<div class="fuel"><div class="nh"><b>⚡ Pendant l\'effort</b><span>'+String(Math.round(f.h*10)/10).replace(".",",")+' h</span></div><div class="fk"><div><b>'+f.carb+' g</b><span>glucides ('+f.ch+' g/h)</span></div><div><b>'+f.gels+'</b><span>gels TA ou équiv.</span></div><div><b>'+f.fl+'</b><span>flasques 500 ml</span></div><div><b>'+String(f.water).replace(".",",")+' L</b><span>eau · '+f.na+' mg sodium</span></div></div><div class="nn">Commence à manger dès 30-45 min, puis toutes les 20-30 min. Teste ces quantités à l\'entraînement.</div></div>'}
 function nutriHtml(day,date,d){var n=dayNeed(date),g=dayGot(day,date,d);var rows=[["Calories","k","kcal","#ff2a93"],["Glucides","G","g","#ffb020"],["Protéines","P","g","#8b2fd9"],["Lipides","L","g","#13a874"]];
@@ -560,6 +577,8 @@ saveTpl:function(wi){var w=S.weeks[wi==null?S.week:wi];S.tpl={days:JSON.parse(JS
 applyTpl:function(wi){if(!S.tpl)return;S.weeks[wi]=tplCopy();normalize();save();return "Semaine type appliquée ✓"},
 tplAuto:function(){S.tplAuto=!S.tplAuto;save();return S.tplAuto?"Les nouvelles semaines partiront de ta semaine type":"Les nouvelles semaines seront variées"},
 delTpl:function(){S.tpl=null;S.tplAuto=false;save();return "Semaine type supprimée"},
+addExtra:function(date,id,q){if(!RB[id])return;S.extra=S.extra||{};(S.extra[date]=S.extra[date]||[]).push([id,+q||1]);var lim=addD(isoD(new Date()),-60);Object.keys(S.extra).forEach(function(k){if(k<lim)delete S.extra[k]});save();return "Ajouté à ta journée ✓"},
+delExtra:function(date,i){var L=(S.extra||{})[date];if(!L||!L[i])return;L.splice(i,1);if(!L.length)delete S.extra[date];save();return "Retiré"},
 delCustom:function(id){if(!S.custom[id])return;delete S.custom[id];delete RB[id];normalize();save();return "Retiré de ma liste"},
 sync:function(){var ba=budgetApp();if(!ba)return;ba.item.amount=Math.round(monthCost()*1.15);ba.state.updatedAt=Date.now();try{localStorage.setItem(BKEY,JSON.stringify(ba.state))}catch(e){}return "Budget mis à jour ✓"}};
 function listText(){var SI=scopeInfo();var q=aggregate(SI.weeks);var by={};Object.keys(q).forEach(function(id){var r=ING[id].s?"Placard (à vérifier)":ING[id].r;(by[r]=by[r]||[]).push("- "+ING[id].n+" : "+fmtQty(id,q[id]))});
