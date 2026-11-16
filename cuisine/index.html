@@ -642,13 +642,36 @@ if(t.id==="bud"){OPS.budget(t.value);rerender();return}
 if(t.dataset.price){OPS.price(t.dataset.price,t.value);rerender();return}
 if(t.id==="imp"){var f=t.files&&t.files[0];if(!f)return;var rd=new FileReader();rd.onload=function(){try{var d=JSON.parse(rd.result);if(!d||!d.grid)throw 0;S=d;normalize();save();settings=false;render();toast("Sauvegarde importée ✓")}catch(e){toast("Fichier invalide")}};rd.readAsText(f)}});
 root.addEventListener("input",function(ev){if(ev.target.id==="q"){query=ev.target.value;var pos=ev.target.selectionStart;render();var q=document.getElementById("q");if(q){q.focus();try{q.setSelectionRange(pos,pos)}catch(e){}}}});
+// ---------- synchro entre appareils : mon programme est chiffré avec ma clé VictorTrail puis gardé sur le serveur ----------
+Object.keys(OPS).forEach(function(k){var f=OPS[k];OPS[k]=function(){var r=f.apply(null,arguments);S._at=Date.now();save();SYNC.push();return r}});
+var SYNC=(function(){var SB="https://vvmfutlpcdgufuowcvte.supabase.co",PK="sb_publishable_5vrAEcRUk75_ucJlDecVxA__k8E9iwi",T=null,busy=false,st={ok:null,at:0};
+function ko(){try{return localStorage.getItem("vt-ko")}catch(e){return null}}
+function u8(x){return Uint8Array.from(atob(x),function(c){return c.charCodeAt(0)})}
+function b64(b){var a=new Uint8Array(b),x="";for(var i=0;i<a.length;i++)x+=String.fromCharCode(a[i]);return btoa(x)}
+function key(){var k=ko();return crypto.subtle.importKey("raw",Uint8Array.from(atob(k.replace(/-/g,"+").replace(/_/g,"/")+"===".slice((k.length+3)%4)),function(c){return c.charCodeAt(0)}),"AES-GCM",false,["encrypt","decrypt"])}
+function tok(){return crypto.subtle.digest("SHA-256",new TextEncoder().encode("vt-well:"+ko())).then(function(h){return Array.from(new Uint8Array(h)).map(function(b){return b.toString(16).padStart(2,"0")}).join("")})}
+function rpc(fn,body){return tok().then(function(t){body.p_tok=t;return fetch(SB+"/rest/v1/rpc/"+fn,{method:"POST",headers:{apikey:PK,"Content-Type":"application/json"},body:JSON.stringify(body)})}).then(function(r){if(!r.ok)throw new Error(r.status);return r.text()}).then(function(x){return x?JSON.parse(x):null})}
+function gz(txt,dir){var cs=dir?new CompressionStream("gzip"):new DecompressionStream("gzip");return new Response(new Blob([txt]).stream().pipeThrough(cs))[dir?"arrayBuffer":"text"]()}
+function adopt(R){S=R;if(!S.grid)S.grid=defGrid();S.custom=S.custom||{};S.weeks=S.weeks||[];S.checked=S.checked||{};S.priceOv=S.priceOv||{};S.fav=S.fav||[];S.excl=S.excl||[];
+  Object.keys(S.custom).forEach(function(id){RB[id]=mkCustom(id,S.custom[id])});normalize();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}render()}
+function pushNow(){if(!ko())return Promise.resolve();var iv=crypto.getRandomValues(new Uint8Array(12)),k;return key().then(function(x){k=x;return gz(JSON.stringify(S),true)}).then(function(z){return crypto.subtle.encrypt({name:"AES-GCM",iv:iv},k,z)}).then(function(ct){return rpc("vt_store_put",{p_k:"cuisine",p_box:{iv:b64(iv),ct:b64(ct),z:1}})}).then(function(){st={ok:true,at:Date.now()}},function(){st={ok:false,at:Date.now()}})}
+function pull(){if(!ko()||busy||!window.crypto||!crypto.subtle||typeof DecompressionStream==="undefined")return Promise.resolve();busy=true;
+  return rpc("vt_store_get",{p_k:"cuisine"}).then(function(box){if(!box||!box.iv)return pushNow();
+    return key().then(function(k){return crypto.subtle.decrypt({name:"AES-GCM",iv:u8(box.iv)},k,u8(box.ct))}).then(function(pt){return gz(pt,false)}).then(function(txt){var R=JSON.parse(txt);
+      if(!S._at||(R._at||0)>(S._at||0)){if(!S._at&&JSON.stringify(R.weeks)!==JSON.stringify(S.weeks)){try{if(!localStorage.getItem(KEY+"-bak"))localStorage.setItem(KEY+"-bak",JSON.stringify(S))}catch(e){}}adopt(R)}
+      else if((S._at||0)>(R._at||0))return pushNow();st={ok:true,at:Date.now()}})}).catch(function(){st={ok:false,at:Date.now()}}).then(function(){busy=false})}
+return{push:function(){clearTimeout(T);T=setTimeout(pushNow,1200)},pull:pull,get state(){return st},hasBak:function(){try{return !!localStorage.getItem(KEY+"-bak")}catch(e){return false}},
+  restoreBak:function(){var b=null;try{b=JSON.parse(localStorage.getItem(KEY+"-bak")||"null")}catch(e){}if(!b)return;b._at=Date.now();adopt(b);pushNow();try{localStorage.removeItem(KEY+"-bak")}catch(e){}return "Données de cet appareil restaurées et synchronisées ✓"},
+  dropBak:function(){try{localStorage.removeItem(KEY+"-bak")}catch(e){}}}})();
+document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")SYNC.pull()});
 // Mode « moteur » : l'onglet Nutrition de VictorTrail charge cette page cachée et l'affiche à sa façon
 if(CORE){render=function(){try{CUI.onChange&&CUI.onChange()}catch(e){}};toast=function(m){try{CUI.onToast&&CUI.onToast(m)}catch(e){}};
-window.CUI={get S(){return S},RB:RB,ING:ING,RECIPES:RECIPES,DAYS:DAYS,SLOTS:SLOTS,TAGS:TAGS,DT:DT,NEED:NEED,CREATORS:window.CREATORS,OPS:OPS,PRODS:PRODS,CATS:CATS,EQUIP:EQUIP,hasEq:hasEq,shelf:shelf,FREEZE:FREEZE,eqMiss:eqMiss,eqName:eqName,
+window.CUI={SYNC:SYNC,get S(){return S},RB:RB,ING:ING,RECIPES:RECIPES,DAYS:DAYS,SLOTS:SLOTS,TAGS:TAGS,DT:DT,NEED:NEED,CREATORS:window.CREATORS,OPS:OPS,PRODS:PRODS,CATS:CATS,EQUIP:EQUIP,hasEq:hasEq,shelf:shelf,FREEZE:FREEZE,eqMiss:eqMiss,eqName:eqName,
 dateOf:dateOf,shortD:shortD,addD:addD,isoD:isoD,dayTrain:dayTrain,dayFactor:dayFactor,dayNeed:dayNeed,dayGot:dayGot,fuel:fuel,aggregate:aggregate,costOf:costOf,weekCost:weekCost,monthCost:monthCost,weekMeals:weekMeals,fmtQty:fmtQty,ingCost:ingCost,recCost:recCost,price:price,scopeInfo:scopeInfo,budgetVal:budgetVal,budgetApp:budgetApp,hasAvoid:hasAvoid,listText:listText,batchPlan:batchPlan,recipePlan:recipePlan,applyTrain:applyTrain,
 get METH(){return METH},setMeth:function(m){METH=m;try{localStorage.setItem("vg-cuisine-meth",m)}catch(e){}},get synced(){return !!TP},onChange:null,onToast:null};
 try{parent.postMessage({cui:"ready"},location.origin)}catch(e){}}
 else render();
+SYNC.pull();
 // Le site VictorTrail est chiffré : on le déchiffre avec la clé déjà enregistrée sur ce téléphone (connexion à VictorTrail)
 function vtData(doc){var el=doc.getElementById("data");if(el&&el.textContent.trim().charAt(0)==="{")return Promise.resolve(JSON.parse(el.textContent));
 var enc=doc.getElementById("enc"),k=null;try{k=localStorage.getItem("vt-ko")}catch(e){}if(!enc||!k)return Promise.resolve(null);
