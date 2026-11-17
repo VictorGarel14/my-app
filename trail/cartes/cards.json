@@ -140,6 +140,19 @@
    "img": "img/s02-president.jpg"
   },
   {
+   "slot": 29,
+   "id": "mut60",
+   "title": "MUT60 – Afrique du Sud",
+   "full": true,
+   "pv": "MUT60",
+   "goal": "8 heures",
+   "attack": "MUT60 – Afrique du Sud",
+   "text": "Un ultra sauvage et exigeant au cœur des montagnes sud-africaines. 60 km d'effort, 3500 m D+, zéro compromis.",
+   "dmg": "",
+   "motto": "« Ailleurs, pour mieux se retrouver. »",
+   "img": "img/s29-mut60.jpg"
+  },
+  {
    "slot": 49,
    "id": "diagonale",
    "title": "Le Fou de la Diagonale",
