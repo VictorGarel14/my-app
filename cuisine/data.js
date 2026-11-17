@@ -234,6 +234,9 @@ Object.assign(window.ING,{
   prozwhite:{n:"Prozis sauce zéro chocolat blanc",r:"Prozis & AM Nutrition",u:"g",p:18,brand:"https://www.prozis.com/fr/fr"},
   prozhaz:{n:"Prozis sauce zéro noisette (hazelnut)",r:"Prozis & AM Nutrition",u:"g",p:18,brand:"https://www.prozis.com/fr/fr"},
   prozchoc:{n:"Prozis sauce zéro chocolat",r:"Prozis & AM Nutrition",u:"g",p:18,brand:"https://www.prozis.com/fr/fr"},
+  prozgran:{n:"Prozis Superb Granola spéculoos",r:"Prozis & AM Nutrition",u:"g",p:14.5,brand:"https://www.prozis.com/fr/fr/prozis/superb-granola-speculoos-275g"},
+  proznapp:{n:"Prozis nappage Indulgent chocolat blanc-noisette",r:"Prozis & AM Nutrition",u:"g",p:24,brand:"https://www.prozis.com/fr/fr/prozis/nappage-indulgent-chocolat-blanc-et-noisette-250-g"},
+  prozpbwc:{n:"Prozis beurre de cacahuète chocolat blanc",r:"Prozis & AM Nutrition",u:"g",p:16,brand:"https://www.prozis.com/fr/fr/prozis/beurre-de-cacahouete-au-chocolat-blanc-250-g"},
   whey:{n:"Whey isolate AM Nutrition (PURE)",r:"Prozis & AM Nutrition",u:"g",p:42.7,brand:"https://amnutrition.fr"}
 });
 window.RECIPES.push(

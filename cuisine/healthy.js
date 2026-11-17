@@ -1009,5 +1009,146 @@ window.RECIPES=window.RECIPES.concat([
 "P": 35,
 "G": 45,
 "L": 6
+},
+{
+"id": "h_bowlgranola",
+"t": "pdj",
+"n": "Bowl skyr, granola spéculoos Prozis & fruits rouges",
+"m": 3,
+"tags": [
+"rapide",
+"recup"
+],
+"i": [
+[
+"skyr",
+200
+],
+[
+"prozgran",
+40
+],
+[
+"frouge",
+80
+],
+[
+"proznapp",
+10
+]
+],
+"u": [
+"Bol"
+],
+"s": [
+"Skyr dans un bol, fruits rouges (décongelés au micro-ondes 1 min si surgelés).",
+"Granola spéculoos par-dessus au dernier moment pour qu'il reste croustillant.",
+"Un filet de nappage chocolat blanc-noisette."
+],
+"k": 386,
+"P": 27,
+"G": 41,
+"L": 10
+},
+{
+"id": "h_pancaramel",
+"t": "pdj",
+"n": "Pancakes protéinés caramel, banane & beurre de cacahuète chocolat blanc",
+"m": 12,
+"tags": [
+"avant",
+"recup"
+],
+"i": [
+[
+"prozpan",
+60
+],
+[
+"banane",
+1
+],
+[
+"prozpbwc",
+15
+]
+],
+"u": [
+"Poêle antiadhésive",
+"Shaker ou bol",
+"Fouet"
+],
+"s": [
+"Mélange la préparation pancake caramel avec environ 100 ml d'eau froide (shaker ou fouet), laisse reposer 2 min.",
+"Fais cuire 3 ou 4 petits pancakes 1-2 min de chaque côté dans une poêle antiadhésive à peine graissée.",
+"Garnis de banane en rondelles et d'une cuillère de beurre de cacahuète chocolat blanc."
+],
+"k": 432,
+"P": 39,
+"G": 43,
+"L": 9
+},
+{
+"id": "h_fbgranola",
+"t": "snack",
+"n": "Fromage blanc & granola spéculoos",
+"m": 2,
+"tags": [
+"rapide",
+"recup"
+],
+"i": [
+[
+"fblanc",
+150
+],
+[
+"prozgran",
+30
+]
+],
+"u": [
+"Bol"
+],
+"s": [
+"Fromage blanc dans un bol, granola spéculoos par-dessus."
+],
+"k": 201,
+"P": 15,
+"G": 23,
+"L": 5
+},
+{
+"id": "h_pancakesnack",
+"t": "snack",
+"n": "2 pancakes protéinés caramel & nappage chocolat blanc",
+"m": 8,
+"tags": [
+"recup",
+"rapide"
+],
+"i": [
+[
+"prozpan",
+30
+],
+[
+"proznapp",
+10
+]
+],
+"u": [
+"Poêle antiadhésive",
+"Shaker ou bol"
+],
+"s": [
+"Mélange la préparation avec environ 50 ml d'eau, laisse reposer 2 min.",
+"Cuis 2 petits pancakes 1-2 min de chaque côté.",
+"Un filet de nappage chocolat blanc-noisette."
+],
+"k": 166,
+"P": 18,
+"G": 13,
+"L": 4
 }
 ]);
