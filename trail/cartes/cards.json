@@ -20,15 +20,16 @@
   },
   {
    "slot": 2,
-   "id": "president",
-   "title": "Le Président du Trail",
-   "pv": "4501",
-   "goal": "10 discours",
-   "attack": "Vote à main levée",
-   "text": "Victor décrète que la côte du Mont Boron est désormais une descente. Adopté à l’unanimité.",
-   "dmg": "130",
-   "motto": "« Je cours, donc je préside. »",
-   "img": "img/s02-president.jpg"
+   "id": "letest",
+   "title": "Le Test",
+   "full": true,
+   "pv": "1000",
+   "goal": "Test VO₂ max",
+   "attack": "Le Test",
+   "text": "Évalue tes capacités, affine ta stratégie, et prépare la suite.",
+   "dmg": "",
+   "motto": "« Continuer à rêver, juste assez pour tenir debout »",
+   "img": "img/s02-le-test.jpg"
   },
   {
    "slot": 3,
@@ -125,6 +126,18 @@
    "dmg": "140",
    "motto": "« Même les autruches demandent mon Strava. »",
    "img": null
+  },
+  {
+   "slot": 11,
+   "id": "president",
+   "title": "Le Président du Trail",
+   "pv": "4501",
+   "goal": "10 discours",
+   "attack": "Vote à main levée",
+   "text": "Victor décrète que la côte du Mont Boron est désormais une descente. Adopté à l’unanimité.",
+   "dmg": "130",
+   "motto": "« Je cours, donc je préside. »",
+   "img": "img/s02-president.jpg"
   },
   {
    "slot": 49,
