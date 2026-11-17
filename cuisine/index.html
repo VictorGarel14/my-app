@@ -209,7 +209,7 @@ html.embed{--ink:#1a1033;--tx:#1a1033;--bd:#1a1033;--sh:#1a1033;--fld:#ffffff;--
 .embed .fab{bottom:calc(16px + env(safe-area-inset-bottom));border:3px solid var(--ink);box-shadow:3px 3px 0 var(--ink)}
 .embed .vt-sig{color:var(--violet);margin-bottom:24px}
 .embed .toast{border:3px solid var(--ink)}
-</style></head><body><div id="root"></div><script src="data.js"></script><script src="steps.js"></script><script src="healthy.js"></script><script>(function(){
+</style></head><body><div id="root"></div><script src="data.js"></script><script src="steps.js"></script><script src="healthy.js"></script><script src="tweaks.js"></script><script>(function(){
 var ING=window.ING,RECIPES=window.RECIPES,RB={};RECIPES.forEach(function(r){RB[r.id]=r});
 var KEY="vg-cuisine-v1",BKEY="vg-budget-v1",CORE=/[?&]core\b/.test(location.search);
 var DAYS=["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
@@ -405,13 +405,17 @@ function slotWant(d,slot){var date=dateOf(GW,d),t=dayTrain(date);if(t&&t.type===
 if(big&&slot==="m")return "avant";if((big||t.type==="qualite")&&slot!=="m")return "recup";if(nx&&(nx.type==="longue"||nx.type==="course")&&slot==="s")return "avant";return null}
 var lr=S.longRun;if(lr<0)return null;var prev=(lr+6)%7;
 if(d===lr&&slot==="m")return "avant";if(d===prev&&slot==="s")return "avant";if(d===lr&&(slot==="d"||slot==="s"))return "recup";return null}
-function pickFor(d,slot,used){var type=slot==="m"?"pdj":"plat";var tag=slotWant(d,slot);var l=tag?pool(type,tag):[];if(!l.length)l=pool(type);return pick(l,used)}
-function genWeek(wi,free){if(!free&&S.tpl&&S.tplAuto)return tplCopy();GW=wi==null?S.weeks.length:wi;var w={days:[],snacks:[]};var used=[],lastPdj=[];
+// Overnight oats : 2 fois par semaine au maximum
+var MAXON=2,CURW=null;function isOver(r){return !!r&&/overnight/i.test(r.n)}
+function overCount(days,skip){return (days||[]).filter(function(day,i){return i!==skip&&day&&isOver(RB[day.m])}).length}
+function pickFor(d,slot,used){var type=slot==="m"?"pdj":"plat";var tag=slotWant(d,slot);var l=tag?pool(type,tag):[];if(!l.length)l=pool(type);
+if(slot==="m"&&overCount(CURW,d)>=MAXON){var l2=l.filter(function(r){return !isOver(r)});if(!l2.length)l2=pool(type).filter(function(r){return !isOver(r)});if(l2.length)l=l2}return pick(l,used)}
+function genWeek(wi,free){if(!free&&S.tpl&&S.tplAuto)return tplCopy();GW=wi==null?S.weeks.length:wi;var w={days:[],snacks:[]};CURW=w.days;var used=[],lastPdj=[];
 for(var d=0;d<7;d++){var day={};SLOTS.forEach(function(sl){var k=sl[0];if(!S.grid[d][k]){day[k]=null;return}
 var id=pickFor(d,k,k==="m"?lastPdj:used);day[k]=id;if(k==="m")lastPdj=[id];else used.push(id)});w.days.push(day)}
 var sn=pool("snack");for(var i=0;i<S.snacks;i++){var x=pick(sn,w.snacks.length<sn.length?w.snacks:[]);if(x)w.snacks.push(x)}
 return w}
-function normalize(){while(S.weeks.length<4)S.weeks.push(genWeek(S.weeks.length));
+function normalize(){while(S.weeks.length<4)S.weeks.push(genWeek(S.weeks.length));S.weeks.forEach(function(w,wi){CURW=w.days;GW=wi;w.days.forEach(function(day,d){if(day&&isOver(RB[day.m])&&overCount(w.days.slice(0,d))>=MAXON)day.m=pickFor(d,"m",[day.m])})});CURW=null;
 S.weeks.forEach(function(w,wi){GW=wi;var used=[];w.days.forEach(function(day){["d","s"].forEach(function(k){if(day[k])used.push(day[k])})});
 w.days.forEach(function(day,d){SLOTS.forEach(function(sl){var k=sl[0];if(!S.grid[d][k])day[k]=null;else if(!day[k]||!RB[day[k]]||hasAvoid(RB[day[k]])||eqMiss(RB[day[k]]).length||S.excl.indexOf(day[k])>=0){day[k]=pickFor(d,k,used);used.push(day[k])}})});
 w.snacks=w.snacks.filter(function(x){return RB[x]&&!hasAvoid(RB[x])});var sn=pool("snack");while(w.snacks.length<S.snacks&&sn.length)w.snacks.push(pick(sn,w.snacks));w.snacks=w.snacks.slice(0,Math.max(0,S.snacks))})}
@@ -553,7 +557,7 @@ function startTimer(min){if(TIMER)clearInterval(TIMER.iv);TIMER={end:Date.now()+
 var OPS={
 week:function(i){S.week=i;save()},
 scope:function(sc){S.scope=sc;save()},
-swap:function(d,k){GW=S.week;var w=S.weeks[S.week];var cur=w.days[d][k];var used=[cur];w.days.forEach(function(day){if(k!=="m"){["d","s"].forEach(function(x){if(day[x])used.push(day[x])})}});w.days[d][k]=pickFor(d,k,used);save()},
+swap:function(d,k){GW=S.week;var w=S.weeks[S.week];CURW=w.days;var cur=w.days[d][k];var used=[cur];w.days.forEach(function(day){if(k!=="m"){["d","s"].forEach(function(x){if(day[x])used.push(day[x])})}});w.days[d][k]=pickFor(d,k,used);save()},
 swapsn:function(i){var w=S.weeks[S.week];w.snacks[i]=pick(pool("snack"),w.snacks);save()},
 grid:function(d,k){S.grid[d][k]=!S.grid[d][k];normalize();save()},
 fixl:function(i){var j=S.fixL.indexOf(i);if(j>=0)S.fixL.splice(j,1);else{S.fixL.push(i);S.grid[i].d=false;normalize()}save()},

@@ -16,11 +16,7 @@ window.RECIPES=window.RECIPES.concat([
 ],
 [
 "skyr",
-150
-],
-[
-"lait",
-100
+200
 ],
 [
 "frouge",
@@ -39,14 +35,14 @@ window.RECIPES=window.RECIPES.concat([
 "Bocal avec couvercle"
 ],
 "s": [
-"La veille : mélange l'avoine, le skyr, le lait et les graines de chia dans un bocal.",
+"La veille : mélange l'avoine, le skyr, les graines de chia et 3 cuillères à soupe d'eau dans un bocal.",
 "Ajoute les fruits rouges encore surgelés par-dessus, ferme et laisse la nuit au frigo.",
 "Le matin : un filet de miel, c'est prêt."
 ],
-"k": 442,
-"P": 28,
-"G": 55,
-"L": 9
+"k": 428,
+"P": 30,
+"G": 52,
+"L": 7
 },
 {
 "id": "h_omelette",
@@ -139,7 +135,7 @@ window.RECIPES=window.RECIPES.concat([
 {
 "id": "h_porridge",
 "t": "pdj",
-"n": "Porridge pomme-cannelle & noix",
+"n": "Porridge pomme-cannelle, skyr & noix",
 "m": 10,
 "tags": [
 "avant"
@@ -150,8 +146,8 @@ window.RECIPES=window.RECIPES.concat([
 60
 ],
 [
-"lait",
-250
+"skyr",
+100
 ],
 [
 "pomme",
@@ -175,14 +171,14 @@ window.RECIPES=window.RECIPES.concat([
 "Râpe"
 ],
 "s": [
-"Fais chauffer le lait avec l'avoine 5 min à feu doux en remuant.",
+"Fais cuire l'avoine dans 250 ml d'eau avec une pincée de sel, 5 min à feu doux en remuant.",
 "Ajoute la moitié de la pomme râpée et la cannelle.",
-"Sers avec le reste de la pomme en dés, les noix concassées et le miel."
+"Sers avec le skyr par-dessus, le reste de la pomme en dés, les noix concassées et le miel."
 ],
-"k": 556,
-"P": 19,
-"G": 75,
-"L": 18
+"k": 504,
+"P": 21,
+"G": 67,
+"L": 15
 },
 {
 "id": "h_bowlpoulet",
@@ -993,22 +989,22 @@ window.RECIPES=window.RECIPES.concat([
 30
 ],
 [
-"lait",
-250
+"skyr",
+100
 ]
 ],
 "u": [
 "Shaker électrique ou blender"
 ],
-"sk": "Tout dans le shaker électrique ou le blender 30 secondes.",
+"sk": "Tout dans le shaker électrique ou le blender avec 200 ml d'eau, 30 secondes.",
 "s": [
-"Mets tout dans le blender ou le shaker électrique et mixe 30 secondes.",
+"Mets tout dans le blender ou le shaker électrique avec 200 ml d'eau froide et mixe 30 secondes.",
 "À boire dans les 30 min après la séance."
 ],
-"k": 381,
-"P": 35,
-"G": 45,
-"L": 6
+"k": 329,
+"P": 37,
+"G": 37,
+"L": 2
 },
 {
 "id": "h_bowlgranola",
