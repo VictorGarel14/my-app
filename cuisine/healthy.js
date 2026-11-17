@@ -1046,10 +1046,10 @@ window.RECIPES=window.RECIPES.concat([
 "Granola spéculoos par-dessus au dernier moment pour qu'il reste croustillant.",
 "Un filet de nappage chocolat blanc-noisette."
 ],
-"k": 392,
-"P": 27,
+"k": 381,
+"P": 26,
 "G": 43,
-"L": 10
+"L": 9
 },
 {
 "id": "h_pancaramel",
@@ -1116,10 +1116,10 @@ window.RECIPES=window.RECIPES.concat([
 "s": [
 "Fromage blanc dans un bol, granola spéculoos par-dessus."
 ],
-"k": 201,
-"P": 15,
+"k": 193,
+"P": 14,
 "G": 23,
-"L": 5
+"L": 4
 },
 {
 "id": "h_pancakesnack",
