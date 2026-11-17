@@ -1012,6 +1012,7 @@ window.RECIPES=window.RECIPES.concat([
 },
 {
 "id": "h_bowlgranola",
+"pro": true,
 "t": "pdj",
 "n": "Bowl skyr, granola spéculoos Prozis & fruits rouges",
 "m": 3,
@@ -1052,6 +1053,7 @@ window.RECIPES=window.RECIPES.concat([
 },
 {
 "id": "h_pancaramel",
+"pro": true,
 "t": "pdj",
 "n": "Pancakes protéinés caramel, banane & beurre de cacahuète chocolat blanc",
 "m": 12,
@@ -1090,6 +1092,7 @@ window.RECIPES=window.RECIPES.concat([
 },
 {
 "id": "h_fbgranola",
+"pro": true,
 "t": "snack",
 "n": "Fromage blanc & granola spéculoos",
 "m": 2,
@@ -1120,6 +1123,7 @@ window.RECIPES=window.RECIPES.concat([
 },
 {
 "id": "h_pancakesnack",
+"pro": true,
 "t": "snack",
 "n": "2 pancakes protéinés caramel & nappage chocolat blanc",
 "m": 8,
