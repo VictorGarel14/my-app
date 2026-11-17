@@ -1046,9 +1046,9 @@ window.RECIPES=window.RECIPES.concat([
 "Granola spéculoos par-dessus au dernier moment pour qu'il reste croustillant.",
 "Un filet de nappage chocolat blanc-noisette."
 ],
-"k": 386,
+"k": 392,
 "P": 27,
-"G": 41,
+"G": 43,
 "L": 10
 },
 {
@@ -1085,10 +1085,10 @@ window.RECIPES=window.RECIPES.concat([
 "Fais cuire 3 ou 4 petits pancakes 1-2 min de chaque côté dans une poêle antiadhésive à peine graissée.",
 "Garnis de banane en rondelles et d'une cuillère de beurre de cacahuète chocolat blanc."
 ],
-"k": 432,
+"k": 437,
 "P": 39,
 "G": 43,
-"L": 9
+"L": 10
 },
 {
 "id": "h_fbgranola",
@@ -1150,9 +1150,9 @@ window.RECIPES=window.RECIPES.concat([
 "Cuis 2 petits pancakes 1-2 min de chaque côté.",
 "Un filet de nappage chocolat blanc-noisette."
 ],
-"k": 166,
-"P": 18,
-"G": 13,
+"k": 172,
+"P": 17,
+"G": 15,
 "L": 4
 }
 ]);
