@@ -7,16 +7,16 @@
  "cards": [
   {
    "slot": 1,
-   "id": "victory",
-   "title": "The Beginning",
+   "id": "ledepart",
+   "title": "Jour 1 – Le départ",
    "full": true,
-   "pv": "1000",
-   "goal": "MUT60 🇿🇦",
-   "attack": "The Beginning",
-   "text": "Chaque jour posé avec intention augmente la détermination de 10 % pour le reste de la semaine.",
+   "pv": "La prépa",
+   "goal": "Lancer la saison 2027",
+   "attack": "Jour 1 – Le départ",
+   "text": "Tout commence ici. 49 semaines pour transformer un rêve en ligne d’arrivée.",
    "dmg": "",
-   "motto": "« Continuer à rêver, juste assez pour tenir debout »",
-   "img": "img/s01-victory.jpg"
+   "motto": "« Le plus long voyage commence par un premier pas. »",
+   "img": "img/s01-le-depart.jpg"
   },
   {
    "slot": 2,
