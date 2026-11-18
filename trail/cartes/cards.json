@@ -16,7 +16,8 @@
    "text": "Tout commence ici. 49 semaines pour transformer un rêve en ligne d’arrivée.",
    "dmg": "",
    "motto": "« Le plus long voyage commence par un premier pas. »",
-   "img": "img/s01-le-depart.jpg"
+   "img": "img/s01-le-depart.jpg",
+   "ratio": "900/1350"
   },
   {
    "slot": 2,
@@ -29,7 +30,8 @@
    "text": "Masque, capteurs, tapis roulant à fond. Les chiffres ne mentent pas : la base de toute la prépa.",
    "dmg": "",
    "motto": "« Pour aller loin, il faut savoir d’où l’on part. »",
-   "img": "img/s02-le-labo.jpg"
+   "img": "img/s02-le-labo.jpg",
+   "ratio": "900/1350"
   },
   {
    "slot": 3,
@@ -150,7 +152,8 @@
    "text": "Un ultra sauvage et exigeant au cœur des montagnes sud-africaines. 60 km d'effort, 3500 m D+, zéro compromis.",
    "dmg": "",
    "motto": "« Ailleurs, pour mieux se retrouver. »",
-   "img": "img/s29-mut60.jpg"
+   "img": "img/s29-mut60.jpg",
+   "ratio": "900/1274"
   },
   {
    "slot": 49,

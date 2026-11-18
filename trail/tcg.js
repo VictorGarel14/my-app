@@ -151,7 +151,7 @@
       '</div></div></div>';
   }
   function flipHTML(s, st, N, isFront) {
-    return '<div class="tcg-flip' + (isFront ? ' front' : '') + '"><div class="tcg-in"><div class="tcg-face">' + back(s, st, N) + '</div><div class="tcg-face f">' + (s.card ? front(s) : '') + '</div></div></div>';
+    return '<div class="tcg-flip' + (isFront ? ' front' : '') + '"' + (s.card && s.card.full && s.card.ratio ? ' style="aspect-ratio:' + esc(s.card.ratio) + '"' : '') + '><div class="tcg-in"><div class="tcg-face">' + back(s, st, N) + '</div><div class="tcg-face f">' + (s.card ? front(s) : '') + '</div></div></div>';
   }
 
   /* ---------- écran classeur ---------- */
