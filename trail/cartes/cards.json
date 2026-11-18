@@ -20,16 +20,16 @@
   },
   {
    "slot": 2,
-   "id": "letest",
-   "title": "Le Test",
+   "id": "lelabo",
+   "title": "Le labo – Connaître son moteur",
    "full": true,
-   "pv": "1000",
-   "goal": "Test VO₂ max",
-   "attack": "Le Test",
-   "text": "Évalue tes capacités, affine ta stratégie, et prépare la suite.",
+   "pv": "Test labo",
+   "goal": "Mesurer ma VO2 max",
+   "attack": "Le labo – Connaître son moteur",
+   "text": "Masque, capteurs, tapis roulant à fond. Les chiffres ne mentent pas : la base de toute la prépa.",
    "dmg": "",
-   "motto": "« Continuer à rêver, juste assez pour tenir debout »",
-   "img": "img/s02-le-test.jpg"
+   "motto": "« Pour aller loin, il faut savoir d’où l’on part. »",
+   "img": "img/s02-le-labo.jpg"
   },
   {
    "slot": 3,
